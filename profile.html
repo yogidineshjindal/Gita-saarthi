@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>प्रोफ़ाइल | Profile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Tiro+Devanagari+Hindi&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{
+  font-family:'Tiro Devanagari Hindi',Poppins,-apple-system,Segoe UI,Roboto,sans-serif;
+  color:#f3f0ff;
+  background:
+    linear-gradient(180deg, rgba(8,6,16,0.55) 0%, rgba(6,4,12,0.9) 60%, rgba(5,3,10,0.98) 100%),
+    #0d0912;
+  min-height:100dvh;
+  padding:0 0 40px;
+}
+.topbar{
+  display:flex;align-items:center;gap:10px;
+  padding:16px 16px;
+  position:sticky;top:0;z-index:5;
+  background:rgba(10,7,20,0.75);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(255,217,138,0.15);
+}
+.back-btn{
+  width:34px;height:34px;border-radius:50%;
+  border:1px solid rgba(255,217,138,0.3);
+  background:rgba(255,217,138,0.08);color:#ffd98a;
+  display:flex;align-items:center;justify-content:center;
+  text-decoration:none;font-size:18px;flex-shrink:0;
+}
+.topbar h1{font-size:16px;margin:0;font-weight:600;color:#ffd98a}
+
+.profile-hero{
+  text-align:center;padding:32px 20px 20px;
+}
+.photo-frame{
+  width:150px;height:150px;border-radius:50%;
+  margin:0 auto 16px;
+  border:3px solid rgba(255,217,138,0.5);
+  box-shadow:0 0 30px rgba(255,196,84,0.35);
+  overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#2a1f45,#150f28);
+  font-size:12px;color:#9a90bb;text-align:center;padding:10px;line-height:1.4;
+}
+.photo-frame img{width:100%;height:100%;object-fit:cover;display:block}
+.profile-name{
+  font-size:23px;font-weight:700;color:#fff;
+  text-shadow:0 0 18px rgba(255,196,84,0.4);
+  margin-bottom:4px;
+}
+.profile-title{font-size:13.5px;color:#ffd98a;letter-spacing:.3px}
+
+.section{
+  max-width:520px;margin:0 auto;padding:18px 20px;
+}
+.section h2{
+  font-size:15px;color:#ffd98a;margin:0 0 10px;
+  display:flex;align-items:center;gap:8px;
+}
+.section h2::before{content:"";width:4px;height:16px;background:#ffd98a;border-radius:2px;display:inline-block}
+.section p{
+  font-size:14.5px;line-height:1.75;color:#e5dfff;margin:0 0 10px;
+}
+.placeholder-note{
+  font-size:12px;color:#9a90bb;font-style:italic;
+  border:1px dashed rgba(255,217,138,0.3);border-radius:10px;
+  padding:10px 12px;margin-top:6px;
+}
+.divider-line{
+  width:60px;height:1.5px;margin:26px auto;
+  background:linear-gradient(90deg,transparent,#ffd98a,transparent);
+}
+.social-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:6px}
+.social-chip{
+  font-size:12.5px;padding:8px 14px;border-radius:20px;
+  background:rgba(255,217,138,0.1);border:1px solid rgba(255,217,138,0.3);
+  color:#ffd98a;text-decoration:none;
+}
+</style></head><body>
+
+<div class="topbar">
+  <a href="index.html" class="back-btn" title="वापस जाएँ / Back">&#8592;</a>
+  <h1>प्रोफ़ाइल | Profile</h1>
+</div>
+
+<div class="profile-hero">
+  <div class="photo-frame" id="photoFrame">
+    फोटो यहाँ आएगी<br>(Photo placeholder)
+  </div>
+  <div class="profile-name">योगी दिनेश जिंदल</div>
+  <div class="profile-title">Yogi Dinesh Jindal</div>
+</div>
+
+<div class="section">
+  <h2>परिचय / About</h2>
+  <p class="placeholder-note">
+    यहाँ योगी दिनेश जिंदल जी का वास्तविक परिचय आएगा — उनकी आध्यात्मिक यात्रा, शिक्षाएँ, और पृष्ठभूमि।<br><br>
+    (Placeholder — real bio content for Yogi Dinesh Jindal will go here once provided: his spiritual journey, teachings, and background.)
+  </p>
+</div>
+
+<div class="divider-line"></div>
+
+<div class="section">
+  <h2>उपलब्धियाँ / Achievements</h2>
+  <p class="placeholder-note">
+    (Placeholder — list of achievements, publications, institutions founded, years of practice, etc. will go here once provided.)
+  </p>
+</div>
+
+<div class="divider-line"></div>
+
+<div class="section">
+  <h2>संपर्क / Connect</h2>
+  <div class="social-row">
+    <a href="#" class="social-chip">वेबसाइट / Website</a>
+    <a href="#" class="social-chip">YouTube</a>
+    <a href="#" class="social-chip">Instagram</a>
+  </div>
+  <p class="placeholder-note" style="margin-top:14px">
+    (Placeholder links — replace with real profile/social URLs once provided.)
+  </p>
+</div>
+
+</body></html>
