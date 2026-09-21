@@ -28,15 +28,22 @@ header{
   padding:22px 20px 16px;
   flex-shrink:0;
 }
-.menu-wrap{position:absolute;top:14px;right:14px;z-index:5}
+.menu-wrap{position:absolute;top:14px;left:14px;z-index:5}
 .menu-btn{
-  width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,217,138,0.3);
-  background:rgba(10,7,20,0.4);color:#ffd98a;font-size:18px;line-height:1;
-  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  width:36px;height:36px;border-radius:10px;border:1px solid rgba(255,217,138,0.4);
+  background:rgba(10,7,20,0.55);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  cursor:pointer;
   backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  box-shadow:0 2px 8px rgba(0,0,0,0.3);
+}
+.menu-btn span{
+  display:block;width:18px;height:2px;border-radius:2px;
+  background:#ffd98a;
+  box-shadow:0 0 4px rgba(255,196,84,0.6);
 }
 .menu-dropdown{
-  position:absolute;top:40px;right:0;min-width:150px;
+  position:absolute;top:40px;left:0;min-width:150px;
   background:linear-gradient(180deg,#241a3f,#150f28);
   border:1px solid rgba(255,217,138,0.25);border-radius:12px;
   box-shadow:0 12px 30px rgba(0,0,0,0.5);
@@ -181,7 +188,7 @@ header .sub{
 
 <header>
   <div class="menu-wrap">
-    <button class="menu-btn" id="menuBtn" title="Menu">&#8942;</button>
+    <button class="menu-btn" id="menuBtn" title="Menu"><span></span><span></span><span></span></button>
     <div class="menu-dropdown" id="menuDropdown">
       <button class="menu-item" id="menuProfileBtn">प्रोफ़ाइल</button>
       <button class="menu-item" id="menuLangBtn">भाषा / Language</button>
@@ -285,6 +292,8 @@ var TXT = {
 };
 
 var currentLang = localStorage.getItem("krishna_lang");
+var greetingBubble = null;
+
 
 function t(key){
   var lang = currentLang || "hi";
@@ -413,6 +422,9 @@ function setLanguage(lang){
   currentLang = lang;
   localStorage.setItem("krishna_lang", lang);
   applyStaticText();
+  if(greetingBubble){
+    greetingBubble.textContent = t("greeting");
+  }
 }
 document.querySelectorAll(".lang-choice").forEach(function(elm){
   elm.addEventListener("click",function(){
@@ -421,7 +433,7 @@ document.querySelectorAll(".lang-choice").forEach(function(elm){
     langModal.classList.remove("show");
     if(wasFirstLaunch){
       langModal.dataset.firstLaunch = "false";
-      add(t("greeting"),"bot");
+      greetingBubble = add(t("greeting"),"bot");
     }
   });
 });
@@ -446,7 +458,7 @@ if(!currentLang){
   langModal.classList.add("show");
 } else {
   applyStaticText();
-  add(t("greeting"),"bot");
+  greetingBubble = add(t("greeting"),"bot");
 }
 </script>
 
