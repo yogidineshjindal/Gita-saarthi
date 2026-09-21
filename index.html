@@ -222,16 +222,6 @@ header .sub{
   </div>
 </div>
 
-<div class="modal-overlay" id="profileModal">
-  <div class="modal-card">
-    <div class="icon">🙏</div>
-    <h3 id="profileTitle">प्रोफ़ाइल</h3>
-    <div class="profile-row"><span id="profileMsgLabel">पूछे गए प्रश्न</span><span id="profileMsgCount">0</span></div>
-    <div class="profile-row"><span id="profileStatusLabel">स्थिति</span><span id="profileStatusVal">निःशुल्क</span></div>
-    <button class="modal-close" id="profileCloseBtn" style="margin-top:14px">बंद करें</button>
-  </div>
-</div>
-
 <script>
 var WEBHOOK_URL = "https://ishikagarg.app.n8n.cloud/webhook/gita-voice";
 var chat=document.getElementById("chat"),input=document.getElementById("msg"),btn=document.getElementById("send"),mic=document.getElementById("mic");
@@ -314,10 +304,6 @@ function applyStaticText(){
   document.getElementById("menuLangBtn").textContent = t("menuLang");
   document.getElementById("langTitle").textContent = t("langTitle");
   document.getElementById("langCloseBtn").textContent = t("langClose");
-  document.getElementById("profileTitle").textContent = t("profileTitle");
-  document.getElementById("profileMsgLabel").textContent = t("profileMsgLabel");
-  document.getElementById("profileStatusLabel").textContent = t("profileStatusLabel");
-  document.getElementById("profileCloseBtn").textContent = t("profileClose");
 }
 
 function add(txt,w){var row=document.createElement("div");row.className="row "+w;var av=document.createElement("div");av.className="av "+w;av.textContent=(w==="bot"?LOTUS:PRAY);var b=document.createElement("div");b.className="bubble";b.textContent=txt;row.appendChild(av);row.appendChild(b);chat.appendChild(row);chat.scrollTop=chat.scrollHeight;return b;}
@@ -328,7 +314,6 @@ function addPlay(bubble,b64){var pb=document.createElement("button");pb.classNam
 var msgCount = 0;
 var subModal = document.getElementById("subModal");
 var langModal = document.getElementById("langModal");
-var profileModal = document.getElementById("profileModal");
 var FREE_LIMIT = 5;
 
 function isUnlocked(){
@@ -451,12 +436,7 @@ document.getElementById("menuLangBtn").addEventListener("click",function(){
 
 /* ---- profile modal ---- */
 document.getElementById("menuProfileBtn").addEventListener("click",function(){
-  document.getElementById("profileMsgCount").textContent = msgCount;
-  document.getElementById("profileStatusVal").textContent = isUnlocked() ? t("profilePaid") : t("profileFree");
-  profileModal.classList.add("show");
-});
-document.getElementById("profileCloseBtn").addEventListener("click",function(){
-  profileModal.classList.remove("show");
+  window.location.href = "profile.html";
 });
 
 /* ---- startup: ask language on first launch ---- */
