@@ -234,6 +234,10 @@ var WEBHOOK_URL = "https://ishikagarg.app.n8n.cloud/webhook/gita-voice";
 var chat=document.getElementById("chat"),input=document.getElementById("msg"),btn=document.getElementById("send"),mic=document.getElementById("mic");
 var LOTUS=String.fromCodePoint(129719),PRAY=String.fromCodePoint(128591);
 
+/* ---- safe storage helpers (never crash if storage is blocked) ---- */
+function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+
 var TXT = {
   hi:{
     title:"श्री कृष्ण वाणी",
@@ -291,7 +295,7 @@ var TXT = {
   }
 };
 
-var currentLang = localStorage.getItem("krishna_lang");
+var currentLang = lsGet("krishna_lang");
 var greetingBubble = null;
 
 
@@ -320,13 +324,19 @@ function addTyping(){var row=document.createElement("div");row.className="row bo
 function play(b64){var a=new Audio("data:audio/wav;base64,"+b64);a.play();}
 function addPlay(bubble,b64){var pb=document.createElement("button");pb.className="playbtn";pb.textContent=t("listenBtn");pb.onclick=function(){play(b64);};bubble.appendChild(document.createElement("br"));bubble.appendChild(pb);}
 
-var msgCount = 0;
+/* ---- free-question limit (saved in the browser, survives reload) ---- */
+var FREE_LIMIT = 3;
+var msgCount = parseInt(lsGet("krishna_msgcount") || "0", 10);
+if(isNaN(msgCount)) msgCount = 0;
+function bumpCount(){
+  msgCount++;
+  lsSet("krishna_msgcount", String(msgCount));
+}
 var subModal = document.getElementById("subModal");
 var langModal = document.getElementById("langModal");
-var FREE_LIMIT = 3;
 
 function isUnlocked(){
-  return localStorage.getItem("krishna_unlocked") === "true";
+  return lsGet("krishna_unlocked") === "true";
 }
 function showPaywall(){
   subModal.classList.add("show");
@@ -340,7 +350,71 @@ function canSendMessage(){
   return true;
 }
 
-async function sendText(){var m=input.value.trim();if(!m)return;if(!canSendMessage())return;add(m,"user");input.value="";msgCount++;var L=addTyping();try{var res=await fetch(WEBHOOK_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:m,sessionId:"mobile-user",lang:currentLang||"hi"})});var data=await res.json();L.textContent=data.reply||t("noReply");}catch(e){L.textContent=t("error")+e.message;}chat.scrollTop=chat.scrollHeight;}
+/* ---- device id (sent to the server so the limit can be enforced there too) ---- */
+function getDeviceId(){
+  var id = lsGet("krishna_device");
+  if(!id){
+    id = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ("d-" + Date.now() + "-" + Math.random().toString(36).slice(2));
+    lsSet("krishna_device", id);
+  }
+  return id;
+}
+
+/* ---- chat history (saved in the browser, restored after reload) ---- */
+var HISTORY_KEY = "krishna_history";
+var MAX_HISTORY = 40;
+function loadHistory(){
+  try{
+    var h = JSON.parse(lsGet(HISTORY_KEY) || "[]");
+    return Array.isArray(h) ? h : [];
+  }catch(e){ return []; }
+}
+function saveHistory(w, txt){
+  if(!txt) return;
+  var h = loadHistory();
+  h.push({w:w, t:txt});
+  if(h.length > MAX_HISTORY) h = h.slice(h.length - MAX_HISTORY);
+  lsSet(HISTORY_KEY, JSON.stringify(h));
+}
+function restoreHistory(){
+  loadHistory().forEach(function(item){
+    if(item && item.t && (item.w === "user" || item.w === "bot")){
+      add(item.t, item.w);
+    }
+  });
+}
+
+/* server says the limit is reached: sync the local count and show the paywall */
+function handleLimitReached(typingBubble){
+  msgCount = FREE_LIMIT;
+  lsSet("krishna_msgcount", String(FREE_LIMIT));
+  if(typingBubble && typingBubble.parentNode && typingBubble.parentNode.parentNode){
+    typingBubble.parentNode.parentNode.removeChild(typingBubble.parentNode);
+  }
+  showPaywall();
+}
+
+async function sendText(){
+  var m=input.value.trim();
+  if(!m)return;
+  if(!canSendMessage())return;
+  add(m,"user");
+  saveHistory("user", m);
+  input.value="";
+  bumpCount();
+  var L=addTyping();
+  try{
+    var res=await fetch(WEBHOOK_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:m,sessionId:"mobile-user",lang:currentLang||"hi",deviceId:getDeviceId(),phone:lsGet("krishna_phone")||""})});
+    var data=await res.json();
+    if(data.limitReached){handleLimitReached(L);return;}
+    var reply=data.reply||t("noReply");
+    L.textContent=reply;
+    saveHistory("bot", reply);
+  }catch(e){
+    L.textContent=t("error")+e.message;
+  }
+  chat.scrollTop=chat.scrollHeight;
+}
 
 var mediaRec=null,chunks=[],recording=false;
 function startRecording(e){
@@ -378,21 +452,33 @@ function stopRecording(e){
 }
 async function sendVoice(blob,filename){
   var userBubble = add(t("listening"),"user");
-  msgCount++;
+  bumpCount();
   var L=addTyping();
   try{
     var fd=new FormData();
     fd.append("data",blob,filename||"recording.webm");
     fd.append("sessionId","mobile-user");
     fd.append("lang",currentLang||"hi");
+    fd.append("deviceId",getDeviceId());
+    fd.append("phone",lsGet("krishna_phone")||"");
     var res=await fetch(WEBHOOK_URL,{method:"POST",body:fd});
     var data=await res.json();
+    if(data.limitReached){
+      if(userBubble.parentNode && userBubble.parentNode.parentNode){
+        userBubble.parentNode.parentNode.removeChild(userBubble.parentNode);
+      }
+      handleLimitReached(L);
+      return;
+    }
     if(data.transcript){
       userBubble.textContent = data.transcript;
     } else {
       userBubble.textContent = t("voiceFallback");
     }
-    L.textContent=data.reply||t("noReply");
+    saveHistory("user", userBubble.textContent);
+    var reply=data.reply||t("noReply");
+    L.textContent=reply;
+    saveHistory("bot", reply);
     if(data.audioBase64){addPlay(L,data.audioBase64);play(data.audioBase64);}
   }catch(e){
     userBubble.textContent = t("voiceFallback");
@@ -420,7 +506,7 @@ document.addEventListener("click",function(){
 /* ---- language modal ---- */
 function setLanguage(lang){
   currentLang = lang;
-  localStorage.setItem("krishna_lang", lang);
+  lsSet("krishna_lang", lang);
   applyStaticText();
   if(greetingBubble){
     greetingBubble.textContent = t("greeting");
@@ -446,7 +532,7 @@ document.getElementById("menuLangBtn").addEventListener("click",function(){
   langModal.classList.add("show");
 });
 
-/* ---- profile modal ---- */
+/* ---- profile page ---- */
 document.getElementById("menuProfileBtn").addEventListener("click",function(){
   window.location.href = "profile.html";
 });
@@ -455,10 +541,19 @@ document.getElementById("menuProfileBtn").addEventListener("click",function(){
 if(!currentLang){
   document.getElementById("langCloseBtn").style.display="none";
   langModal.dataset.firstLaunch = "true";
-  langModal.classList.add("show");
+  var LANG_POPUP_DELAY = 3000; /* milliseconds: 3000 = 3 seconds, change as you like */
+  setTimeout(function(){
+    if(!currentLang){ langModal.classList.add("show"); }
+  }, LANG_POPUP_DELAY);
 } else {
   applyStaticText();
   greetingBubble = add(t("greeting"),"bot");
+  restoreHistory();
+}
+
+/* ---- if the free limit is already used up, show the paywall right away ---- */
+if(!isUnlocked() && msgCount >= FREE_LIMIT){
+  showPaywall();
 }
 </script>
 
