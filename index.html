@@ -28,6 +28,28 @@ header{
   padding:22px 20px 16px;
   flex-shrink:0;
 }
+.menu-wrap{position:absolute;top:14px;right:14px;z-index:5}
+.menu-btn{
+  width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,217,138,0.3);
+  background:rgba(10,7,20,0.4);color:#ffd98a;font-size:18px;line-height:1;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+}
+.menu-dropdown{
+  position:absolute;top:40px;right:0;min-width:150px;
+  background:linear-gradient(180deg,#241a3f,#150f28);
+  border:1px solid rgba(255,217,138,0.25);border-radius:12px;
+  box-shadow:0 12px 30px rgba(0,0,0,0.5);
+  overflow:hidden;display:none;
+}
+.menu-dropdown.show{display:block}
+.menu-item{
+  padding:12px 16px;font-size:13.5px;color:#f3f0ff;cursor:pointer;
+  text-align:left;background:none;border:none;width:100%;
+  font-family:inherit;
+}
+.menu-item:not(:last-child){border-bottom:1px solid rgba(255,217,138,0.12)}
+.menu-item:active{background:rgba(255,217,138,0.1)}
 .om-line{font-size:13px;letter-spacing:3px;color:#ffd98a;opacity:0.85;margin-bottom:6px}
 header .title{
   font-size:27px;
@@ -48,18 +70,12 @@ header .sub{
   width:70px;height:1.5px;margin:12px auto 0;
   background:linear-gradient(90deg, transparent, #ffd98a, transparent);
 }
-.tagline{
-  margin-top:10px;
-  font-size:12.5px;
-  font-style:italic;
-  color:#d8cdfa;
-  text-shadow:0 1px 6px rgba(0,0,0,0.85);
-}
 
 #chat{
   position:relative;
   z-index:2;
   flex:1;
+  min-height:0;
   overflow-y:auto;
   padding:14px 14px 8px;
   display:flex;
@@ -80,7 +96,6 @@ header .sub{
 }
 .user .bubble{background:rgba(106,141,255,0.55);color:#fff;border:1px solid rgba(255,255,255,0.18);border-bottom-right-radius:6px}
 .bot .bubble{background:rgba(20,14,34,0.55);border:1px solid rgba(255,217,138,0.22);color:#f6f1ff;border-bottom-left-radius:6px}
-.bubble .cite{display:block;margin-top:6px;font-size:12.5px;color:#ffd98a;font-style:italic;opacity:0.9}
 .typing{display:inline-flex;gap:4px;align-items:center}
 .typing i{width:7px;height:7px;border-radius:50%;background:#c9b8ff;display:inline-block;animation:blink 1.2s infinite}
 .typing i:nth-child(2){animation-delay:.2s}.typing i:nth-child(3){animation-delay:.4s}
@@ -93,13 +108,14 @@ header .sub{
 #bar{
   position:relative;z-index:2;
   display:flex;gap:8px;
+  flex-shrink:0;
   padding:12px 12px calc(12px + env(safe-area-inset-bottom));
   background:rgba(10,7,20,0.55);
   backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
   border-top:1px solid rgba(255,217,138,0.18);
 }
 #msg{
-  flex:1;padding:13px 16px;border-radius:24px;
+  flex:1;min-width:0;padding:13px 16px;border-radius:24px;
   border:1px solid rgba(255,217,138,0.25);
   background:rgba(255,255,255,0.08);
   color:#fff;font-size:16px;font-family:inherit;outline:none;transition:border .2s;
@@ -145,20 +161,36 @@ header .sub{
   background:linear-gradient(135deg,#ffd98a,#d4af37);
   color:#241a3f;font-weight:700;font-size:14.5px;
   padding:12px 0;border-radius:12px;
-  text-decoration:none;
+  text-decoration:none;border:none;cursor:pointer;
 }
 .modal-close{
   display:block;margin:14px auto 0;
   background:none;border:none;color:#9a90bb;
   font-size:12.5px;cursor:pointer;
 }
+.lang-btn-row{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+.lang-choice{
+  display:block;width:100%;padding:13px 0;border-radius:12px;
+  background:rgba(255,217,138,0.1);border:1px solid rgba(255,217,138,0.35);
+  color:#ffd98a;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;
+}
+.lang-choice:active{background:rgba(255,217,138,0.2)}
+.profile-row{display:flex;justify-content:space-between;font-size:13.5px;color:#d8cdf0;padding:8px 0;border-bottom:1px solid rgba(255,217,138,0.12)}
+.profile-row:last-of-type{border-bottom:none}
 </style></head><body>
 
 <header>
+  <div class="menu-wrap">
+    <button class="menu-btn" id="menuBtn" title="Menu">&#8942;</button>
+    <div class="menu-dropdown" id="menuDropdown">
+      <button class="menu-item" id="menuProfileBtn">प्रोफ़ाइल</button>
+      <button class="menu-item" id="menuLangBtn">भाषा / Language</button>
+    </div>
+  </div>
   <div class="om-line">ॐ</div>
-  <div class="title">श्री कृष्ण वाणी</div>
+  <div class="title" id="headerTitle">श्री कृष्ण वाणी</div>
   <div class="divider"></div>
-  <div class="sub">आपके प्रश्न, श्री कृष्ण के उत्तर</div>
+  <div class="sub" id="headerSub">आपके प्रश्न, श्री कृष्ण के उत्तर</div>
 </header>
 
 <div id="chat"></div>
@@ -172,9 +204,31 @@ header .sub{
 <div class="modal-overlay" id="subModal">
   <div class="modal-card">
     <div class="icon">🪷</div>
-    <h3>निःशुल्क सीमा पूरी हुई</h3>
-    <p>आपने 5 प्रश्न पूछ लिए हैं। आगे बातचीत जारी रखने के लिए कृपया दक्षिणा अर्पित करें।</p>
-    <a class="modal-btn" href="subscribe.html" target="_blank" rel="noopener">दक्षिणा दें</a>
+    <h3 id="paywallTitle">निःशुल्क सीमा पूरी हुई</h3>
+    <p id="paywallText">आपने 5 प्रश्न पूछ लिए हैं। आगे बातचीत जारी रखने के लिए कृपया दक्षिणा अर्पित करें।</p>
+    <a class="modal-btn" href="subscribe.html" target="_blank" rel="noopener" id="paywallBtn">दक्षिणा दें</a>
+  </div>
+</div>
+
+<div class="modal-overlay" id="langModal">
+  <div class="modal-card">
+    <div class="icon">🌐</div>
+    <h3 id="langTitle">अपनी भाषा चुनें / Choose your language</h3>
+    <div class="lang-btn-row">
+      <button class="lang-choice" data-lang="hi">हिंदी</button>
+      <button class="lang-choice" data-lang="en">English</button>
+    </div>
+    <button class="modal-close" id="langCloseBtn" style="display:none">बंद करें / Close</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="profileModal">
+  <div class="modal-card">
+    <div class="icon">🙏</div>
+    <h3 id="profileTitle">प्रोफ़ाइल</h3>
+    <div class="profile-row"><span id="profileMsgLabel">पूछे गए प्रश्न</span><span id="profileMsgCount">0</span></div>
+    <div class="profile-row"><span id="profileStatusLabel">स्थिति</span><span id="profileStatusVal">निःशुल्क</span></div>
+    <button class="modal-close" id="profileCloseBtn" style="margin-top:14px">बंद करें</button>
   </div>
 </div>
 
@@ -182,13 +236,99 @@ header .sub{
 var WEBHOOK_URL = "https://ishikagarg.app.n8n.cloud/webhook/gita-voice";
 var chat=document.getElementById("chat"),input=document.getElementById("msg"),btn=document.getElementById("send"),mic=document.getElementById("mic");
 var LOTUS=String.fromCodePoint(129719),PRAY=String.fromCodePoint(128591);
-function add(t,w){var row=document.createElement("div");row.className="row "+w;var av=document.createElement("div");av.className="av "+w;av.textContent=(w==="bot"?LOTUS:PRAY);var b=document.createElement("div");b.className="bubble";b.textContent=t;row.appendChild(av);row.appendChild(b);chat.appendChild(row);chat.scrollTop=chat.scrollHeight;return b;}
-function addTyping(){var row=document.createElement("div");row.className="row bot";var av=document.createElement("div");av.className="av bot";av.textContent=LOTUS;var b=document.createElement("div");b.className="bubble";var t=document.createElement("span");t.className="typing";t.appendChild(document.createElement("i"));t.appendChild(document.createElement("i"));t.appendChild(document.createElement("i"));b.appendChild(t);row.appendChild(av);row.appendChild(b);chat.appendChild(row);chat.scrollTop=chat.scrollHeight;return b;}
+
+var TXT = {
+  hi:{
+    title:"श्री कृष्ण वाणी",
+    sub:"आपके प्रश्न, श्री कृष्ण के उत्तर",
+    placeholder:"यहाँ अपना प्रश्न लिखें...",
+    micTitle:"बोलें",
+    sendTitle:"भेजें",
+    greeting:"नमस्ते प्रिय मित्र "+PRAY,
+    listening:String.fromCodePoint(127908)+" सुन रहा हूँ...",
+    voiceFallback:String.fromCodePoint(127908)+" (आपकी आवाज़)",
+    noReply:"(कोई उत्तर नहीं)",
+    error:"कुछ गड़बड़ हो गयी: ",
+    micError:"माइक एक्सेस नहीं मिला: ",
+    listenBtn:String.fromCodePoint(128266)+" सुनें",
+    paywallTitle:"निःशुल्क सीमा पूरी हुई",
+    paywallText:"आपने 5 प्रश्न पूछ लिए हैं। आगे बातचीत जारी रखने के लिए कृपया दक्षिणा अर्पित करें।",
+    paywallBtn:"दक्षिणा दें",
+    menuProfile:"प्रोफ़ाइल",
+    menuLang:"भाषा / Language",
+    langTitle:"अपनी भाषा चुनें / Choose your language",
+    langClose:"बंद करें / Close",
+    profileTitle:"प्रोफ़ाइल",
+    profileMsgLabel:"पूछे गए प्रश्न",
+    profileStatusLabel:"स्थिति",
+    profileFree:"निःशुल्क उपयोगकर्ता",
+    profilePaid:"सदस्यता सक्रिय",
+    profileClose:"बंद करें"
+  },
+  en:{
+    title:"Shri Krishna Vani",
+    sub:"Your questions, Shri Krishna's answers",
+    placeholder:"Type your question here...",
+    micTitle:"Speak",
+    sendTitle:"Send",
+    greeting:"Namaste dear friend "+PRAY,
+    listening:String.fromCodePoint(127908)+" Listening...",
+    voiceFallback:String.fromCodePoint(127908)+" (your voice)",
+    noReply:"(no reply)",
+    error:"Something went wrong: ",
+    micError:"Mic access denied: ",
+    listenBtn:String.fromCodePoint(128266)+" Listen",
+    paywallTitle:"Free limit reached",
+    paywallText:"You've asked 5 questions. Please offer a small contribution to continue the conversation.",
+    paywallBtn:"Contribute",
+    menuProfile:"Profile",
+    menuLang:"भाषा / Language",
+    langTitle:"अपनी भाषा चुनें / Choose your language",
+    langClose:"बंद करें / Close",
+    profileTitle:"Profile",
+    profileMsgLabel:"Questions asked",
+    profileStatusLabel:"Status",
+    profileFree:"Free user",
+    profilePaid:"Subscription active",
+    profileClose:"Close"
+  }
+};
+
+var currentLang = localStorage.getItem("krishna_lang");
+
+function t(key){
+  var lang = currentLang || "hi";
+  return TXT[lang][key];
+}
+
+function applyStaticText(){
+  document.getElementById("headerTitle").textContent = t("title");
+  document.getElementById("headerSub").textContent = t("sub");
+  input.placeholder = t("placeholder");
+  mic.title = t("micTitle");
+  btn.title = t("sendTitle");
+  document.getElementById("paywallTitle").textContent = t("paywallTitle");
+  document.getElementById("paywallText").textContent = t("paywallText");
+  document.getElementById("paywallBtn").textContent = t("paywallBtn");
+  document.getElementById("menuProfileBtn").textContent = t("menuProfile");
+  document.getElementById("menuLangBtn").textContent = t("menuLang");
+  document.getElementById("langTitle").textContent = t("langTitle");
+  document.getElementById("langCloseBtn").textContent = t("langClose");
+  document.getElementById("profileTitle").textContent = t("profileTitle");
+  document.getElementById("profileMsgLabel").textContent = t("profileMsgLabel");
+  document.getElementById("profileStatusLabel").textContent = t("profileStatusLabel");
+  document.getElementById("profileCloseBtn").textContent = t("profileClose");
+}
+
+function add(txt,w){var row=document.createElement("div");row.className="row "+w;var av=document.createElement("div");av.className="av "+w;av.textContent=(w==="bot"?LOTUS:PRAY);var b=document.createElement("div");b.className="bubble";b.textContent=txt;row.appendChild(av);row.appendChild(b);chat.appendChild(row);chat.scrollTop=chat.scrollHeight;return b;}
+function addTyping(){var row=document.createElement("div");row.className="row bot";var av=document.createElement("div");av.className="av bot";av.textContent=LOTUS;var b=document.createElement("div");b.className="bubble";var ty=document.createElement("span");ty.className="typing";ty.appendChild(document.createElement("i"));ty.appendChild(document.createElement("i"));ty.appendChild(document.createElement("i"));b.appendChild(ty);row.appendChild(av);row.appendChild(b);chat.appendChild(row);chat.scrollTop=chat.scrollHeight;return b;}
 function play(b64){var a=new Audio("data:audio/wav;base64,"+b64);a.play();}
-function addPlay(bubble,b64){var pb=document.createElement("button");pb.className="playbtn";pb.textContent=String.fromCodePoint(128266)+" सुनें";pb.onclick=function(){play(b64);};bubble.appendChild(document.createElement("br"));bubble.appendChild(pb);}
-add("नमस्ते प्रिय मित्र "+PRAY,"bot");
+function addPlay(bubble,b64){var pb=document.createElement("button");pb.className="playbtn";pb.textContent=t("listenBtn");pb.onclick=function(){play(b64);};bubble.appendChild(document.createElement("br"));bubble.appendChild(pb);}
+
 var msgCount = 0;
 var subModal = document.getElementById("subModal");
+var langModal = document.getElementById("langModal");
+var profileModal = document.getElementById("profileModal");
 var FREE_LIMIT = 5;
 
 function isUnlocked(){
@@ -206,7 +346,8 @@ function canSendMessage(){
   return true;
 }
 
-async function sendText(){var m=input.value.trim();if(!m)return;if(!canSendMessage())return;add(m,"user");input.value="";msgCount++;var L=addTyping();try{var res=await fetch(WEBHOOK_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:m,sessionId:"mobile-user"})});var data=await res.json();L.textContent=data.reply||"(कोई उत्तर नहीं)";}catch(e){L.textContent="कुछ गड़बड़ हो गयी: "+e.message;}chat.scrollTop=chat.scrollHeight;}
+async function sendText(){var m=input.value.trim();if(!m)return;if(!canSendMessage())return;add(m,"user");input.value="";msgCount++;var L=addTyping();try{var res=await fetch(WEBHOOK_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:m,sessionId:"mobile-user",lang:currentLang||"hi"})});var data=await res.json();L.textContent=data.reply||t("noReply");}catch(e){L.textContent=t("error")+e.message;}chat.scrollTop=chat.scrollHeight;}
+
 var mediaRec=null,chunks=[],recording=false;
 function startRecording(e){
   e.preventDefault();
@@ -224,7 +365,7 @@ function startRecording(e){
     mediaRec.onstop=function(){
       recording=false;
       mic.classList.remove("rec");
-      stream.getTracks().forEach(function(t){t.stop();});
+      stream.getTracks().forEach(function(tr){tr.stop();});
       var finalBlob=new Blob(chunks,{type:"audio/webm"});
       if(finalBlob.size>0){sendVoice(finalBlob,"recording.webm");}
     };
@@ -232,7 +373,7 @@ function startRecording(e){
     recording=true;
     mic.classList.add("rec");
   }).catch(function(e){
-    alert("माइक एक्सेस नहीं मिला: "+e.name+" - "+e.message);
+    alert(t("micError")+e.name+" - "+e.message);
   });
 }
 function stopRecording(e){
@@ -242,18 +383,27 @@ function stopRecording(e){
   }
 }
 async function sendVoice(blob,filename){
-  add(String.fromCodePoint(127908)+" (आपकी आवाज़)","user");
+  var userBubble = add(t("listening"),"user");
   msgCount++;
   var L=addTyping();
   try{
     var fd=new FormData();
     fd.append("data",blob,filename||"recording.webm");
     fd.append("sessionId","mobile-user");
+    fd.append("lang",currentLang||"hi");
     var res=await fetch(WEBHOOK_URL,{method:"POST",body:fd});
     var data=await res.json();
-    L.textContent=data.reply||"(कोई उत्तर नहीं)";
+    if(data.transcript){
+      userBubble.textContent = data.transcript;
+    } else {
+      userBubble.textContent = t("voiceFallback");
+    }
+    L.textContent=data.reply||t("noReply");
     if(data.audioBase64){addPlay(L,data.audioBase64);play(data.audioBase64);}
-  }catch(e){L.textContent="कुछ गड़बड़ हो गयी: "+e.message;}
+  }catch(e){
+    userBubble.textContent = t("voiceFallback");
+    L.textContent=t("error")+e.message;
+  }
   chat.scrollTop=chat.scrollHeight;
 }
 btn.addEventListener("click",sendText);
@@ -262,6 +412,62 @@ mic.addEventListener("pointerdown",startRecording);
 mic.addEventListener("pointerup",stopRecording);
 mic.addEventListener("pointerleave",stopRecording);
 mic.addEventListener("pointercancel",stopRecording);
+
+/* ---- three-dot menu ---- */
+var menuBtn=document.getElementById("menuBtn"), menuDropdown=document.getElementById("menuDropdown");
+menuBtn.addEventListener("click",function(e){
+  e.stopPropagation();
+  menuDropdown.classList.toggle("show");
+});
+document.addEventListener("click",function(){
+  menuDropdown.classList.remove("show");
+});
+
+/* ---- language modal ---- */
+function setLanguage(lang){
+  currentLang = lang;
+  localStorage.setItem("krishna_lang", lang);
+  applyStaticText();
+}
+document.querySelectorAll(".lang-choice").forEach(function(elm){
+  elm.addEventListener("click",function(){
+    var wasFirstLaunch = langModal.dataset.firstLaunch === "true";
+    setLanguage(elm.getAttribute("data-lang"));
+    langModal.classList.remove("show");
+    if(wasFirstLaunch){
+      langModal.dataset.firstLaunch = "false";
+      add(t("greeting"),"bot");
+    }
+  });
+});
+document.getElementById("langCloseBtn").addEventListener("click",function(){
+  langModal.classList.remove("show");
+});
+document.getElementById("menuLangBtn").addEventListener("click",function(){
+  document.getElementById("langCloseBtn").style.display="block";
+  langModal.dataset.firstLaunch = "false";
+  langModal.classList.add("show");
+});
+
+/* ---- profile modal ---- */
+document.getElementById("menuProfileBtn").addEventListener("click",function(){
+  document.getElementById("profileMsgCount").textContent = msgCount;
+  document.getElementById("profileStatusVal").textContent = isUnlocked() ? t("profilePaid") : t("profileFree");
+  profileModal.classList.add("show");
+});
+document.getElementById("profileCloseBtn").addEventListener("click",function(){
+  profileModal.classList.remove("show");
+});
+
+/* ---- startup: ask language on first launch ---- */
+if(!currentLang){
+  document.getElementById("langCloseBtn").style.display="none";
+  langModal.dataset.firstLaunch = "true";
+  langModal.classList.add("show");
+} else {
+  applyStaticText();
+  add(t("greeting"),"bot");
+}
 </script>
 
 </body></html>
