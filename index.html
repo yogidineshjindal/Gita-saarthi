@@ -212,7 +212,7 @@ header .sub{
   <div class="modal-card">
     <div class="icon">🪷</div>
     <h3 id="paywallTitle">निःशुल्क सीमा पूरी हुई</h3>
-    <p id="paywallText">आपने 5 प्रश्न पूछ लिए हैं। आगे बातचीत जारी रखने के लिए कृपया दक्षिणा अर्पित करें।</p>
+    <p id="paywallText">आपने 3 प्रश्न पूछ लिए हैं। आगे बातचीत जारी रखने के लिए कृपया दक्षिणा अर्पित करें।</p>
     <a class="modal-btn" href="subscribe.html" target="_blank" rel="noopener" id="paywallBtn">दक्षिणा दें</a>
   </div>
 </div>
@@ -249,7 +249,7 @@ var TXT = {
     micError:"माइक एक्सेस नहीं मिला: ",
     listenBtn:String.fromCodePoint(128266)+" सुनें",
     paywallTitle:"निःशुल्क सीमा पूरी हुई",
-    paywallText:"आपने 5 प्रश्न पूछ लिए हैं। आगे बातचीत जारी रखने के लिए कृपया दक्षिणा अर्पित करें।",
+    paywallText:"आपने 3 प्रश्न पूछ लिए हैं। आगे बातचीत जारी रखने के लिए कृपया दक्षिणा अर्पित करें।",
     paywallBtn:"दक्षिणा दें",
     menuProfile:"प्रोफ़ाइल",
     menuLang:"भाषा / Language",
@@ -276,7 +276,7 @@ var TXT = {
     micError:"Mic access denied: ",
     listenBtn:String.fromCodePoint(128266)+" Listen",
     paywallTitle:"Free limit reached",
-    paywallText:"You've asked 5 questions. Please offer a small contribution to continue the conversation.",
+    paywallText:"You've asked 3 questions. Please offer a small contribution to continue the conversation.",
     paywallBtn:"Contribute",
     menuProfile:"Profile",
     menuLang:"भाषा / Language",
@@ -323,7 +323,7 @@ function addPlay(bubble,b64){var pb=document.createElement("button");pb.classNam
 var msgCount = 0;
 var subModal = document.getElementById("subModal");
 var langModal = document.getElementById("langModal");
-var FREE_LIMIT = 5;
+var FREE_LIMIT = 3;
 
 function isUnlocked(){
   return localStorage.getItem("krishna_unlocked") === "true";
