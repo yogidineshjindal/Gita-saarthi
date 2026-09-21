@@ -190,7 +190,7 @@ async function checkStatus(phone) {
       statusText.textContent = "आपकी दक्षिणा स्वीकृत हो गई है। चैट खोली जा रही है...";
       localStorage.setItem("krishna_unlocked", "true");
       setTimeout(function () {
-        window.location.href = "shri-krishna-vani.html";
+        window.location.href = "index.html";
       }, 900);
       return;
     } else if (data.status === "not_found") {
