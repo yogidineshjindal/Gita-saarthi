@@ -1,190 +1,205 @@
 <!DOCTYPE html>
 <html lang="hi"><head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>श्री कृष्ण वाणी</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Tiro+Devanagari+Hindi&display=swap" rel="stylesheet">
 <style>
+:root{
+  --bg-deep:#070d16;
+  --bg-mid:#0f1c2e;
+  --bg-rise:#152a40;
+  --brass:#c9925a;
+  --brass-light:#e8bd8a;
+  --brass-dim:#8a6440;
+  --teal:#2f6f6b;
+  --teal-light:#7db8ab;
+  --ember:#ff6a4d;
+  --text:#f2e9da;
+  --text-muted:#a9b7c3;
+  --glass-bot:rgba(20,32,46,0.6);
+  --glass-user:rgba(46,64,55,0.5);
+}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;margin:0;}
 body{
-  font-family:'Tiro Devanagari Hindi',Poppins,-apple-system,Segoe UI,Roboto,sans-serif;
-  color:#f3f0ff;
+  font-family:'Poppins',-apple-system,Segoe UI,Roboto,sans-serif;
+  color:var(--text);
   display:flex;
   flex-direction:column;
   height:100dvh;
   overflow:hidden;
   position:relative;
   background:
-    linear-gradient(180deg, rgba(8,6,16,0.35) 0%, rgba(8,6,16,0.35) 30%, rgba(8,6,16,0.6) 55%, rgba(6,4,12,0.88) 78%, rgba(5,3,10,0.96) 100%),
-    url('krishna-header.jpg') 40% center / cover no-repeat fixed;
+    radial-gradient(ellipse 700px 380px at 50% -40px, rgba(201,146,90,0.16), transparent 65%),
+    radial-gradient(ellipse 600px 500px at 85% 15%, rgba(47,111,107,0.14), transparent 60%),
+    linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-mid) 45%, var(--bg-rise) 100%);
 }
 
+/* ---------- ambient diya particles ---------- */
+#particles{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.diya{
+  position:absolute;bottom:-20px;border-radius:50%;
+  background:radial-gradient(circle, rgba(232,189,138,0.9) 0%, rgba(232,189,138,0.25) 55%, transparent 75%);
+  animation:rise linear infinite;
+  opacity:0;
+}
+@keyframes rise{
+  0%{transform:translateY(0) scale(0.6);opacity:0}
+  8%{opacity:.55}
+  85%{opacity:.35}
+  100%{transform:translateY(-108vh) scale(1);opacity:0}
+}
+
+/* ---------- header + feather mark ---------- */
 header{
-  position:relative;
-  z-index:2;
-  text-align:center;
-  padding:22px 20px 16px;
-  flex-shrink:0;
+  position:relative;z-index:3;text-align:center;
+  padding:24px 20px 14px;flex-shrink:0;
 }
-.menu-wrap{position:absolute;top:14px;left:14px;z-index:5}
+.menu-wrap{position:absolute;top:16px;left:16px;z-index:5}
 .menu-btn{
-  width:36px;height:36px;border-radius:10px;border:1px solid rgba(255,217,138,0.4);
-  background:rgba(10,7,20,0.55);
+  width:36px;height:36px;border-radius:9px;border:1px solid rgba(201,146,90,0.35);
+  background:rgba(7,13,22,0.5);
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
-  cursor:pointer;
-  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
-  box-shadow:0 2px 8px rgba(0,0,0,0.3);
+  cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
 }
-.menu-btn span{
-  display:block;width:18px;height:2px;border-radius:2px;
-  background:#ffd98a;
-  box-shadow:0 0 4px rgba(255,196,84,0.6);
-}
+.menu-btn span{display:block;width:16px;height:1.5px;border-radius:2px;background:var(--brass-light)}
 .menu-dropdown{
-  position:absolute;top:40px;left:0;min-width:150px;
-  background:linear-gradient(180deg,#241a3f,#150f28);
-  border:1px solid rgba(255,217,138,0.25);border-radius:12px;
-  box-shadow:0 12px 30px rgba(0,0,0,0.5);
-  overflow:hidden;display:none;
+  position:absolute;top:42px;left:0;min-width:160px;
+  background:linear-gradient(180deg,#182b3e,#0d1826);
+  border:1px solid rgba(201,146,90,0.25);border-radius:12px;
+  box-shadow:0 14px 32px rgba(0,0,0,0.5);overflow:hidden;display:none;
 }
 .menu-dropdown.show{display:block}
 .menu-item{
-  padding:12px 16px;font-size:13.5px;color:#f3f0ff;cursor:pointer;
-  text-align:left;background:none;border:none;width:100%;
-  font-family:inherit;
+  padding:12px 16px;font-size:13.5px;color:var(--text);cursor:pointer;
+  text-align:left;background:none;border:none;width:100%;font-family:inherit;
 }
-.menu-item:not(:last-child){border-bottom:1px solid rgba(255,217,138,0.12)}
-.menu-item:active{background:rgba(255,217,138,0.1)}
-.om-line{font-size:13px;letter-spacing:3px;color:#ffd98a;opacity:0.85;margin-bottom:6px}
+.menu-item:not(:last-child){border-bottom:1px solid rgba(201,146,90,0.1)}
+.menu-item:active{background:rgba(201,146,90,0.1)}
+
+.feather-mark{width:118px;height:52px;margin:0 auto;display:block;overflow:visible;animation:sway 7s ease-in-out infinite}
+@keyframes sway{0%,100%{transform:rotate(-1.5deg)}50%{transform:rotate(1.5deg)}}
+.feather-mark .quill{stroke:var(--brass-dim);stroke-width:1.1;fill:none;opacity:.8}
+.feather-mark .barb{stroke:var(--teal-light);stroke-width:1;fill:none;opacity:.55}
+.feather-mark .eye{fill:none;stroke:var(--brass-light);stroke-width:1.4}
+.feather-mark .eye-core{fill:var(--brass-light);opacity:.9}
+
 header .title{
-  font-size:27px;
-  font-weight:700;
-  letter-spacing:.5px;
-  color:#fff;
-  text-shadow:0 2px 12px rgba(0,0,0,0.75), 0 0 22px rgba(255,196,84,0.45);
+  margin-top:6px;
+  font-family:'Tiro Devanagari Hindi',serif;
+  font-size:26px;font-weight:400;letter-spacing:.5px;color:var(--brass-light);
+  text-shadow:0 0 18px rgba(201,146,90,0.35);
 }
 header .sub{
-  font-size:14px;
-  color:#ffe9c2;
-  margin-top:6px;
-  font-weight:400;
-  letter-spacing:.2px;
-  text-shadow:0 1px 6px rgba(0,0,0,0.85);
+  font-size:13.5px;color:var(--text-muted);margin-top:5px;font-weight:400;letter-spacing:.2px;
 }
 .divider{
-  width:70px;height:1.5px;margin:12px auto 0;
-  background:linear-gradient(90deg, transparent, #ffd98a, transparent);
+  width:64px;height:1px;margin:14px auto 0;
+  background:linear-gradient(90deg, transparent, var(--teal-light), var(--brass-light), transparent);
+  opacity:.6;
 }
 
+/* ---------- chat ---------- */
 #chat{
-  position:relative;
-  z-index:2;
-  flex:1;
-  min-height:0;
-  overflow-y:auto;
-  padding:14px 14px 8px;
-  display:flex;
-  flex-direction:column;
-  gap:12px;
+  position:relative;z-index:2;flex:1;min-height:0;overflow-y:auto;
+  padding:16px 14px 8px;display:flex;flex-direction:column;gap:12px;
 }
 #chat::-webkit-scrollbar{width:0}
 .row{display:flex;align-items:flex-end;gap:8px;animation:pop .28s ease}
 .row.user{flex-direction:row-reverse}
-.av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.35)}
-.av.bot{background:linear-gradient(135deg,#ffe08a,#d4af37)}
-.av.user{background:linear-gradient(135deg,#6a8dff,#8f6cff)}
+.av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;border:1px solid rgba(255,255,255,0.08)}
+.av.bot{background:linear-gradient(135deg,#2f6f6b,#1a4340);color:var(--brass-light)}
+.av.user{background:linear-gradient(135deg,#3d5a4c,#25382e);color:var(--text)}
 .bubble{
-  max-width:78%;padding:12px 15px;border-radius:18px;line-height:1.6;font-size:15px;
+  max-width:78%;padding:12px 15px;border-radius:16px;line-height:1.65;font-size:15px;
   white-space:pre-wrap;word-wrap:break-word;
-  box-shadow:0 6px 20px rgba(0,0,0,.35);
+  box-shadow:0 8px 22px rgba(0,0,0,.28);
   backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
 }
-.user .bubble{background:rgba(106,141,255,0.55);color:#fff;border:1px solid rgba(255,255,255,0.18);border-bottom-right-radius:6px}
-.bot .bubble{background:rgba(20,14,34,0.55);border:1px solid rgba(255,217,138,0.22);color:#f6f1ff;border-bottom-left-radius:6px}
-.typing{display:inline-flex;gap:4px;align-items:center}
-.typing i{width:7px;height:7px;border-radius:50%;background:#c9b8ff;display:inline-block;animation:blink 1.2s infinite}
-.typing i:nth-child(2){animation-delay:.2s}.typing i:nth-child(3){animation-delay:.4s}
+.user .bubble{background:var(--glass-user);color:var(--text);border:1px solid rgba(125,184,171,0.22);border-bottom-right-radius:5px}
+.bot .bubble{background:var(--glass-bot);border:1px solid rgba(201,146,90,0.2);color:var(--text);border-bottom-left-radius:5px}
+
+/* flute waveform loading state */
+.waveform{display:inline-flex;align-items:center;gap:3px;height:16px}
+.waveform i{
+  width:3px;border-radius:2px;background:var(--brass-light);display:inline-block;
+  animation:wave 1s ease-in-out infinite;
+}
+.waveform i:nth-child(1){height:6px;animation-delay:0s}
+.waveform i:nth-child(2){height:14px;animation-delay:.12s}
+.waveform i:nth-child(3){height:9px;animation-delay:.24s}
+.waveform i:nth-child(4){height:16px;animation-delay:.36s}
+.waveform i:nth-child(5){height:7px;animation-delay:.48s}
+@keyframes wave{0%,100%{transform:scaleY(.4);opacity:.6}50%{transform:scaleY(1);opacity:1}}
+
 .playbtn{
-  display:inline-flex;align-items:center;gap:5px;margin-top:8px;
-  background:rgba(255,217,138,0.14);border:1px solid rgba(255,217,138,0.35);
-  color:#ffd98a;padding:6px 14px;border-radius:14px;font-size:12.5px;font-family:inherit;cursor:pointer;
+  display:inline-flex;align-items:center;gap:6px;margin-top:8px;
+  background:rgba(201,146,90,0.1);border:1px solid rgba(201,146,90,0.32);
+  color:var(--brass-light);padding:6px 14px;border-radius:13px;font-size:12.5px;font-family:inherit;cursor:pointer;
 }
 
+/* ---------- input bar ---------- */
 #bar{
-  position:relative;z-index:2;
-  display:flex;gap:8px;
-  flex-shrink:0;
+  position:relative;z-index:3;display:flex;gap:8px;flex-shrink:0;
   padding:12px 12px calc(12px + env(safe-area-inset-bottom));
-  background:rgba(10,7,20,0.55);
+  background:rgba(7,13,22,0.6);
   backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-  border-top:1px solid rgba(255,217,138,0.18);
+  border-top:1px solid rgba(201,146,90,0.16);
 }
 #msg{
-  flex:1;min-width:0;padding:13px 16px;border-radius:24px;
-  border:1px solid rgba(255,217,138,0.25);
-  background:rgba(255,255,255,0.08);
-  color:#fff;font-size:16px;font-family:inherit;outline:none;transition:border .2s;
+  flex:1;min-width:0;padding:13px 16px;border-radius:22px;
+  border:1px solid rgba(201,146,90,0.22);
+  background:rgba(255,255,255,0.04);
+  color:var(--text);font-size:16px;font-family:inherit;outline:none;transition:border .2s;
 }
-#msg::placeholder{color:#c9bfe8}
-#msg:focus{border-color:#ff9d6c}
-#mic,#send{width:50px;height:50px;flex-shrink:0;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .15s}
-#mic svg,#send svg{width:22px;height:22px}
-#mic{border:1px solid rgba(255,217,138,0.35);background:rgba(255,217,138,0.12);color:#ffd98a;touch-action:none;user-select:none;-webkit-user-select:none}
-#mic.rec{background:linear-gradient(135deg,#ff5f6d,#ff2d55);color:#fff;border-color:transparent;animation:pulse 1s infinite}
-#send{border:none;background:linear-gradient(135deg,#ffb347,#ff7e5f);color:#fff;box-shadow:0 4px 14px rgba(255,126,95,.5)}
+#msg::placeholder{color:var(--text-muted)}
+#msg:focus{border-color:var(--teal-light)}
+#mic,#send{width:48px;height:48px;flex-shrink:0;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .15s}
+#mic svg,#send svg{width:20px;height:20px}
+#mic{border:1px solid rgba(125,184,171,0.35);background:rgba(47,111,107,0.15);color:var(--teal-light);touch-action:none;user-select:none;-webkit-user-select:none}
+#mic.rec{background:linear-gradient(135deg,#ff6a4d,#e8483a);color:#fff;border-color:transparent;animation:pulse 1s infinite}
+#send{border:none;background:linear-gradient(135deg,var(--brass-light),var(--brass));color:#241608;box-shadow:0 4px 14px rgba(201,146,90,.4)}
 #send:active,#mic:active{transform:scale(.9)}
 @keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-@keyframes blink{0%,60%,100%{opacity:.3}30%{opacity:1}}
-@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,45,85,.6)}70%{box-shadow:0 0 0 12px rgba(255,45,85,0)}100%{box-shadow:0 0 0 0 rgba(255,45,85,0)}}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,106,77,.55)}70%{box-shadow:0 0 0 12px rgba(255,106,77,0)}100%{box-shadow:0 0 0 0 rgba(255,106,77,0)}}
 
+/* ---------- modals ---------- */
 .modal-overlay{
-  position:fixed;inset:0;z-index:50;
-  background:rgba(5,3,10,0.72);
-  display:flex;align-items:center;justify-content:center;
-  padding:24px;
-  opacity:0;pointer-events:none;
-  transition:opacity .25s ease;
+  position:fixed;inset:0;z-index:50;background:rgba(4,8,14,0.78);
+  display:flex;align-items:center;justify-content:center;padding:24px;
+  opacity:0;pointer-events:none;transition:opacity .25s ease;
 }
 .modal-overlay.show{opacity:1;pointer-events:auto}
 .modal-card{
-  background:linear-gradient(180deg,#241a3f,#150f28);
-  border:1px solid rgba(255,217,138,0.25);
-  border-radius:18px;
-  padding:26px 24px 22px;
-  max-width:320px;width:100%;
-  text-align:center;
-  box-shadow:0 30px 60px rgba(0,0,0,0.5);
-  transform:translateY(10px);
-  transition:transform .25s ease;
+  background:linear-gradient(180deg,#18293c,#0c1622);
+  border:1px solid rgba(201,146,90,0.28);border-radius:16px;
+  padding:26px 24px 22px;max-width:320px;width:100%;text-align:center;
+  box-shadow:0 30px 60px rgba(0,0,0,0.55);
+  transform:translateY(10px);transition:transform .25s ease;
 }
 .modal-overlay.show .modal-card{transform:translateY(0)}
-.modal-card .icon{font-size:34px;margin-bottom:10px}
-.modal-card h3{margin:0 0 10px;font-size:18px;font-weight:700;color:#ffd98a}
-.modal-card p{margin:0 0 20px;font-size:13.5px;color:#d8cdf0;line-height:1.6}
+.modal-card .icon-mark{width:44px;height:20px;margin:0 auto 12px}
+.modal-card h3{margin:0 0 10px;font-size:18px;font-weight:600;color:var(--brass-light);font-family:'Tiro Devanagari Hindi',serif}
+.modal-card p{margin:0 0 20px;font-size:13.5px;color:var(--text-muted);line-height:1.6}
 .modal-btn{
   display:inline-block;width:100%;
-  background:linear-gradient(135deg,#ffd98a,#d4af37);
-  color:#241a3f;font-weight:700;font-size:14.5px;
-  padding:12px 0;border-radius:12px;
+  background:linear-gradient(135deg,var(--brass-light),var(--brass));
+  color:#241608;font-weight:600;font-size:14.5px;padding:12px 0;border-radius:11px;
   text-decoration:none;border:none;cursor:pointer;
 }
-.modal-close{
-  display:block;margin:14px auto 0;
-  background:none;border:none;color:#9a90bb;
-  font-size:12.5px;cursor:pointer;
-}
+.modal-close{display:block;margin:14px auto 0;background:none;border:none;color:var(--text-muted);font-size:12.5px;cursor:pointer}
 .lang-btn-row{display:flex;flex-direction:column;gap:10px;margin-top:6px}
 .lang-choice{
-  display:block;width:100%;padding:13px 0;border-radius:12px;
-  background:rgba(255,217,138,0.1);border:1px solid rgba(255,217,138,0.35);
-  color:#ffd98a;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;
+  display:block;width:100%;padding:13px 0;border-radius:11px;
+  background:rgba(47,111,107,0.12);border:1px solid rgba(125,184,171,0.32);
+  color:var(--teal-light);font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;
 }
-.lang-choice:active{background:rgba(255,217,138,0.2)}
-.profile-row{display:flex;justify-content:space-between;font-size:13.5px;color:#d8cdf0;padding:8px 0;border-bottom:1px solid rgba(255,217,138,0.12)}
-.profile-row:last-of-type{border-bottom:none}
+.lang-choice:active{background:rgba(47,111,107,0.22)}
 </style></head><body>
+
+<div id="particles"></div>
 
 <header>
   <div class="menu-wrap">
@@ -194,7 +209,16 @@ header .sub{
       <button class="menu-item" id="menuLangBtn">भाषा / Language</button>
     </div>
   </div>
-  <div class="om-line">ॐ</div>
+
+  <svg class="feather-mark" viewBox="0 0 118 52" aria-hidden="true">
+    <path class="quill" d="M4 48 C 30 30, 55 12, 59 4"/>
+    <path class="barb" d="M14 44 C 22 34, 28 26, 30 20"/>
+    <path class="barb" d="M24 38 C 32 28, 38 20, 41 14"/>
+    <path class="barb" d="M34 30 C 42 22, 47 16, 50 11"/>
+    <ellipse class="eye" cx="88" cy="16" rx="20" ry="12" transform="rotate(-18 88 16)"/>
+    <ellipse class="eye-core" cx="88" cy="16" rx="5" ry="3.2" transform="rotate(-18 88 16)"/>
+  </svg>
+
   <div class="title" id="headerTitle">श्री कृष्ण वाणी</div>
   <div class="divider"></div>
   <div class="sub" id="headerSub">आपके प्रश्न, श्री कृष्ण के उत्तर</div>
@@ -210,7 +234,7 @@ header .sub{
 
 <div class="modal-overlay" id="subModal">
   <div class="modal-card">
-    <div class="icon">🪷</div>
+    <svg class="icon-mark" viewBox="0 0 44 20" aria-hidden="true"><path d="M2 18 C 14 10, 24 5, 26 2" stroke="var(--brass-dim)" stroke-width="1" fill="none"/><ellipse cx="34" cy="7" rx="8" ry="5" transform="rotate(-18 34 7)" stroke="var(--brass-light)" stroke-width="1.2" fill="none"/><ellipse cx="34" cy="7" rx="2.2" ry="1.4" transform="rotate(-18 34 7)" fill="var(--brass-light)"/></svg>
     <h3 id="paywallTitle">निःशुल्क सीमा पूरी हुई</h3>
     <p id="paywallText">आपने 3 प्रश्न पूछ लिए हैं। आगे बातचीत जारी रखने के लिए कृपया दक्षिणा अर्पित करें।</p>
     <a class="modal-btn" href="subscribe.html" target="_blank" rel="noopener" id="paywallBtn">दक्षिणा दें</a>
@@ -219,7 +243,7 @@ header .sub{
 
 <div class="modal-overlay" id="langModal">
   <div class="modal-card">
-    <div class="icon">🌐</div>
+    <svg class="icon-mark" viewBox="0 0 44 20" aria-hidden="true"><path d="M2 18 C 14 10, 24 5, 26 2" stroke="var(--teal)" stroke-width="1" fill="none"/><ellipse cx="34" cy="7" rx="8" ry="5" transform="rotate(-18 34 7)" stroke="var(--teal-light)" stroke-width="1.2" fill="none"/><ellipse cx="34" cy="7" rx="2.2" ry="1.4" transform="rotate(-18 34 7)" fill="var(--teal-light)"/></svg>
     <h3 id="langTitle">अपनी भाषा चुनें / Choose your language</h3>
     <div class="lang-btn-row">
       <button class="lang-choice" data-lang="hi">हिंदी</button>
@@ -233,6 +257,24 @@ header .sub{
 var WEBHOOK_URL = "https://ishikagarg.app.n8n.cloud/webhook/gita-voice";
 var chat=document.getElementById("chat"),input=document.getElementById("msg"),btn=document.getElementById("send"),mic=document.getElementById("mic");
 var LOTUS=String.fromCodePoint(129719),PRAY=String.fromCodePoint(128591);
+
+/* ---- ambient diya particles ---- */
+(function initParticles(){
+  var wrap = document.getElementById("particles");
+  var COUNT = 12;
+  for(var i=0;i<COUNT;i++){
+    var d = document.createElement("div");
+    d.className = "diya";
+    var size = 3 + Math.random()*5;
+    d.style.width = size+"px";
+    d.style.height = size+"px";
+    d.style.left = (Math.random()*100)+"%";
+    var dur = 14 + Math.random()*14;
+    d.style.animationDuration = dur+"s";
+    d.style.animationDelay = (-Math.random()*dur)+"s";
+    wrap.appendChild(d);
+  }
+})();
 
 /* ---- safe storage helpers (never crash if storage is blocked) ---- */
 function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
@@ -298,7 +340,6 @@ var TXT = {
 var currentLang = lsGet("krishna_lang");
 var greetingBubble = null;
 
-
 function t(key){
   var lang = currentLang || "hi";
   return TXT[lang][key];
@@ -320,7 +361,15 @@ function applyStaticText(){
 }
 
 function add(txt,w){var row=document.createElement("div");row.className="row "+w;var av=document.createElement("div");av.className="av "+w;av.textContent=(w==="bot"?LOTUS:PRAY);var b=document.createElement("div");b.className="bubble";b.textContent=txt;row.appendChild(av);row.appendChild(b);chat.appendChild(row);chat.scrollTop=chat.scrollHeight;return b;}
-function addTyping(){var row=document.createElement("div");row.className="row bot";var av=document.createElement("div");av.className="av bot";av.textContent=LOTUS;var b=document.createElement("div");b.className="bubble";var ty=document.createElement("span");ty.className="typing";ty.appendChild(document.createElement("i"));ty.appendChild(document.createElement("i"));ty.appendChild(document.createElement("i"));b.appendChild(ty);row.appendChild(av);row.appendChild(b);chat.appendChild(row);chat.scrollTop=chat.scrollHeight;return b;}
+function addTyping(){
+  var row=document.createElement("div");row.className="row bot";
+  var av=document.createElement("div");av.className="av bot";av.textContent=LOTUS;
+  var b=document.createElement("div");b.className="bubble";
+  var wf=document.createElement("span");wf.className="waveform";
+  for(var i=0;i<5;i++){wf.appendChild(document.createElement("i"));}
+  b.appendChild(wf);
+  row.appendChild(av);row.appendChild(b);chat.appendChild(row);chat.scrollTop=chat.scrollHeight;return b;
+}
 function play(b64){var a=new Audio("data:audio/wav;base64,"+b64);a.play();}
 function addPlay(bubble,b64){var pb=document.createElement("button");pb.className="playbtn";pb.textContent=t("listenBtn");pb.onclick=function(){play(b64);};bubble.appendChild(document.createElement("br"));bubble.appendChild(pb);}
 
