@@ -33,6 +33,26 @@ body{
   background-repeat:no-repeat;
   background-attachment:fixed;
 }
+body::after{
+  content:"";position:fixed;inset:0;z-index:6;pointer-events:none;
+  background:radial-gradient(ellipse 130% 85% at 50% 20%, transparent 58%, rgba(46,59,66,0.05) 100%);
+}
+
+/* ---------- ambient gold dust (echoes the gold flecks in the lotus artwork) ---------- */
+#dust{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.mote{
+  position:absolute;border-radius:50%;
+  background:radial-gradient(circle, rgba(216,179,95,0.95) 0%, rgba(216,179,95,0.3) 60%, transparent 78%);
+  animation:drift linear infinite;
+  opacity:0;
+}
+@keyframes drift{
+  0%{transform:translate(0,0);opacity:0}
+  10%{opacity:.65}
+  50%{transform:translate(8px,-55vh)}
+  90%{opacity:.4}
+  100%{transform:translate(-6px,-100vh);opacity:0}
+}
 
 /* ---------- header ---------- */
 header{
@@ -51,7 +71,12 @@ header{
   width:104px;height:128px;
   border-radius:14px;overflow:hidden;
   border:1.5px solid var(--gold);
-  box-shadow:0 8px 20px rgba(74,90,99,0.22), 0 0 0 4px rgba(255,255,255,0.55);
+  animation:riseIn 1.2s cubic-bezier(.22,1,.36,1) both, breathe 5.5s ease-in-out infinite 1.2s;
+}
+@keyframes riseIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes breathe{
+  0%,100%{box-shadow:0 8px 20px rgba(74,90,99,0.22), 0 0 0 4px rgba(255,255,255,0.55), 0 0 16px rgba(216,179,95,0.22);}
+  50%{box-shadow:0 8px 24px rgba(74,90,99,0.24), 0 0 0 4px rgba(255,255,255,0.6), 0 0 32px rgba(216,179,95,0.48);}
 }
 .header-photo img{
   width:100%;height:100%;object-fit:cover;object-position:center 22%;display:block;
@@ -87,15 +112,20 @@ header .title{
   font-family:'Tiro Devanagari Hindi',serif;
   font-size:25px;font-weight:400;letter-spacing:.4px;color:var(--slate-deep);
   text-shadow:0 1px 8px rgba(255,255,255,0.6);
+  animation:fadeUp 1.1s ease both;animation-delay:.35s;
 }
 header .sub{
   font-size:13px;color:var(--ink-muted);margin-top:4px;font-weight:400;letter-spacing:.2px;
+  animation:fadeUp 1.1s ease both;animation-delay:.6s;
 }
 .divider{
   width:58px;height:1px;margin:12px auto 0;
   background:linear-gradient(90deg, transparent, var(--gold), transparent);
-  opacity:.7;
+  opacity:0;
+  animation:fadeIn .9s ease both;animation-delay:.5s;
 }
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:.7}}
 
 /* ---------- chat ---------- */
 #chat{
@@ -103,7 +133,7 @@ header .sub{
   padding:14px 14px 8px;display:flex;flex-direction:column;gap:12px;
 }
 #chat::-webkit-scrollbar{width:0}
-.row{display:flex;align-items:flex-end;gap:8px;animation:pop .28s ease}
+.row{display:flex;align-items:flex-end;gap:8px;animation:pop .5s cubic-bezier(.16,.8,.32,1) both}
 .row.user{flex-direction:row-reverse}
 .av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;border:1px solid rgba(184,146,60,0.4)}
 .av.bot{background:linear-gradient(135deg,#EDE0C2,#D8B35F);color:var(--gold-deep)}
@@ -138,62 +168,124 @@ header .sub{
 
 /* ---------- input bar ---------- */
 #bar{
-  position:relative;z-index:3;display:flex;gap:8px;flex-shrink:0;
-  padding:12px 12px calc(12px + env(safe-area-inset-bottom));
-  background:rgba(255,255,255,0.68);
+  position:relative;z-index:3;display:flex;gap:10px;flex-shrink:0;align-items:center;
+  padding:13px 14px calc(13px + env(safe-area-inset-bottom));
+  background:rgba(255,255,255,0.72);
   backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-  border-top:1px solid rgba(184,146,60,0.25);
+  border-top:1px solid rgba(184,146,60,0.3);
+}
+#bar::before{
+  content:"";position:absolute;left:0;right:0;top:-1px;height:3px;
+  background-image:radial-gradient(circle at 9px 3px, transparent 7px, rgba(184,146,60,0.4) 8px);
+  background-size:18px 6px;background-repeat:repeat-x;background-position:center top;
 }
 #msg{
-  flex:1;min-width:0;padding:13px 16px;border-radius:22px;
-  border:1px solid rgba(184,146,60,0.35);
-  background:rgba(255,255,255,0.75);
-  color:var(--ink);font-size:16px;font-family:inherit;outline:none;transition:border .2s;
+  flex:1;min-width:0;padding:13px 17px;border-radius:22px;
+  border:1px solid rgba(184,146,60,0.4);
+  background:rgba(255,255,255,0.8);
+  color:var(--ink);font-size:16px;font-family:inherit;outline:none;transition:border .2s, box-shadow .2s;
+  box-shadow:inset 0 1px 3px rgba(74,90,99,0.06);
 }
 #msg::placeholder{color:var(--ink-muted)}
-#msg:focus{border-color:var(--slate)}
-#mic,#send{width:48px;height:48px;flex-shrink:0;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .15s}
-#mic svg,#send svg{width:20px;height:20px}
-#mic{border:1px solid rgba(74,90,99,0.35);background:rgba(74,90,99,0.08);color:var(--slate-deep);touch-action:none;user-select:none;-webkit-user-select:none}
+#msg:focus{border-color:var(--slate);box-shadow:inset 0 1px 3px rgba(74,90,99,0.06), 0 0 0 3px rgba(74,90,99,0.08)}
+#mic,#send{
+  position:relative;width:50px;height:50px;flex-shrink:0;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .15s;
+}
+#mic::before,#send::before{
+  content:"";position:absolute;inset:-4px;border-radius:50%;border:1px solid;opacity:.35;pointer-events:none;
+}
+#mic svg,#send svg{width:19px;height:19px;position:relative;z-index:1}
+#mic{
+  border:1.5px solid var(--slate);background:radial-gradient(circle at 35% 30%, #eef2f2, rgba(74,90,99,0.1));
+  color:var(--slate-deep);touch-action:none;user-select:none;-webkit-user-select:none;
+  box-shadow:0 3px 10px rgba(74,90,99,.18);
+}
+#mic::before{border-color:rgba(74,90,99,0.3)}
 #mic.rec{background:linear-gradient(135deg,#d97a5f,#c05a3f);color:#fff;border-color:transparent;animation:pulse 1s infinite}
-#send{border:none;background:linear-gradient(135deg,var(--gold-light),var(--gold));color:#3a2c0c;box-shadow:0 4px 14px rgba(184,146,60,.4)}
+#mic.rec::before{border-color:transparent}
+#send{
+  border:1.5px solid var(--gold-deep);
+  background:radial-gradient(circle at 35% 28%, var(--gold-light), var(--gold) 65%, var(--gold-deep));
+  color:#3a2c0c;box-shadow:0 5px 16px rgba(184,146,60,.45), inset 0 1px 0 rgba(255,255,255,.5);
+}
+#send::before{border-color:rgba(184,146,60,0.4)}
 #send:active,#mic:active{transform:scale(.9)}
-@keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes pop{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(192,90,63,.5)}70%{box-shadow:0 0 0 12px rgba(192,90,63,0)}100%{box-shadow:0 0 0 0 rgba(192,90,63,0)}}
 
 /* ---------- modals ---------- */
 .modal-overlay{
-  position:fixed;inset:0;z-index:50;background:rgba(44,52,56,0.45);
+  position:fixed;inset:0;z-index:50;
+  background:radial-gradient(ellipse 420px 320px at 50% 42%, rgba(216,179,95,0.22), rgba(44,52,56,0.5) 68%);
   display:flex;align-items:center;justify-content:center;padding:24px;
-  opacity:0;pointer-events:none;transition:opacity .25s ease;
+  opacity:0;pointer-events:none;transition:opacity .5s ease;
 }
 .modal-overlay.show{opacity:1;pointer-events:auto}
 .modal-card{
-  background:rgba(255,255,255,0.94);
-  border:1px solid rgba(184,146,60,0.4);border-radius:16px;
-  padding:26px 24px 22px;max-width:320px;width:100%;text-align:center;
-  box-shadow:0 30px 60px rgba(44,52,56,0.3);
-  transform:translateY(10px);transition:transform .25s ease;
+  position:relative;
+  background:
+    radial-gradient(circle at 8px 8px, rgba(184,146,60,0.15) 1px, transparent 1.2px) 0 0/16px 16px,
+    var(--panel-deep, #fdfaf2);
+  background-color:#fdfaf2;
+  border-radius:6px;
+  padding:40px 26px 26px;max-width:308px;width:100%;text-align:center;
+  box-shadow:0 34px 70px rgba(44,52,56,0.4);
+  transform:translateY(10px) scale(.97);opacity:0;
+  transition:transform .55s cubic-bezier(.19,.72,.32,1), opacity .5s ease;
 }
-.modal-overlay.show .modal-card{transform:translateY(0)}
-.modal-card .icon-mark{width:40px;height:24px;margin:0 auto 12px}
-.modal-card h3{margin:0 0 10px;font-size:18px;font-weight:600;color:var(--gold-deep);font-family:'Tiro Devanagari Hindi',serif}
-.modal-card p{margin:0 0 20px;font-size:13.5px;color:var(--ink-muted);line-height:1.6}
+.modal-overlay.show .modal-card{transform:translateY(0) scale(1);opacity:1}
+.modal-card::before{
+  content:"";position:absolute;inset:7px;border:1px solid rgba(184,146,60,0.5);border-radius:3px;pointer-events:none;
+}
+.modal-card::after{
+  content:"";position:absolute;left:0;right:0;top:0;height:5px;
+  background-image:radial-gradient(circle at 10px 0, transparent 8px, rgba(184,146,60,0.55) 9px);
+  background-size:20px 10px;background-position:center top;background-repeat:repeat-x;
+}
+.corner{position:absolute;width:16px;height:16px;opacity:.65;pointer-events:none}
+.corner svg{width:100%;height:100%}
+.corner.tl{top:11px;left:11px}
+.corner.tr{top:11px;right:11px;transform:scaleX(-1)}
+.corner.bl{bottom:11px;left:11px;transform:scaleY(-1)}
+.corner.br{bottom:11px;right:11px;transform:scale(-1,-1)}
+
+.crest{
+  position:absolute;top:-30px;left:50%;transform:translateX(-50%);
+  width:58px;height:58px;
+}
+.crest .ring{
+  position:absolute;inset:0;border-radius:50%;
+  background:var(--panel-deep,#fdfaf2);background-color:#fdfaf2;
+  border:1.5px solid var(--gold);
+  box-shadow:0 0 0 4px #fdfaf2, 0 8px 18px rgba(44,52,56,.28);
+  display:flex;align-items:center;justify-content:center;
+}
+.crest svg{width:28px;height:28px}
+
+.modal-card h3{margin:0 0 9px;font-size:19px;font-weight:400;color:var(--gold-deep);font-family:'Tiro Devanagari Hindi',serif;letter-spacing:.3px}
+.modal-card p{margin:0 0 20px;font-size:13.5px;color:var(--ink-muted);line-height:1.65}
+
 .modal-btn{
-  display:inline-block;width:100%;
-  background:linear-gradient(135deg,var(--gold-light),var(--gold));
-  color:#3a2c0c;font-weight:600;font-size:14.5px;padding:12px 0;border-radius:11px;
-  text-decoration:none;border:none;cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;
+  background:linear-gradient(180deg,var(--gold-light),var(--gold) 60%,var(--gold-deep));
+  color:#3a2c0c;font-weight:600;font-size:14.5px;padding:13px 0;border-radius:9px;
+  text-decoration:none;border:none;cursor:pointer;position:relative;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.55), 0 6px 16px rgba(138,106,38,.35);
 }
-.modal-close{display:block;margin:14px auto 0;background:none;border:none;color:var(--ink-muted);font-size:12.5px;cursor:pointer}
-.lang-btn-row{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+.modal-btn::before,.modal-btn::after{content:"◆";font-size:7px;opacity:.75}
+.modal-close{display:block;margin:16px auto 0;background:none;border:none;color:var(--ink-muted);font-size:12.5px;cursor:pointer;letter-spacing:.2px}
+.lang-btn-row{display:flex;flex-direction:column;gap:10px;margin-top:4px}
 .lang-choice{
-  display:block;width:100%;padding:13px 0;border-radius:11px;
-  background:rgba(74,90,99,0.06);border:1px solid rgba(74,90,99,0.35);
+  display:block;width:100%;padding:13px 0;border-radius:9px;
+  background:rgba(74,90,99,0.05);border:1px solid rgba(74,90,99,0.4);
   color:var(--slate-deep);font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;
+  transition:background .15s ease;
 }
-.lang-choice:active{background:rgba(74,90,99,0.14)}
+.lang-choice:active{background:rgba(74,90,99,0.16)}
 </style></head><body>
+
+<div id="dust"></div>
 
 <header>
   <div class="menu-wrap">
@@ -226,7 +318,24 @@ header .sub{
 
 <div class="modal-overlay" id="subModal">
   <div class="modal-card">
-    <svg class="icon-mark" viewBox="0 0 40 24" aria-hidden="true"><path d="M2 22 C 14 12, 26 6, 30 2" stroke="var(--gold-deep)" stroke-width="1" fill="none"/><circle cx="34" cy="6" r="4" fill="var(--gold-light)"/></svg>
+    <div class="corner tl"><svg viewBox="0 0 16 16"><path d="M1 15 V4 Q1 1 4 1 H15" fill="none" stroke="var(--gold)" stroke-width="1.1"/></svg></div>
+    <div class="corner tr"><svg viewBox="0 0 16 16"><path d="M1 15 V4 Q1 1 4 1 H15" fill="none" stroke="var(--gold)" stroke-width="1.1"/></svg></div>
+    <div class="corner bl"><svg viewBox="0 0 16 16"><path d="M1 15 V4 Q1 1 4 1 H15" fill="none" stroke="var(--gold)" stroke-width="1.1"/></svg></div>
+    <div class="corner br"><svg viewBox="0 0 16 16"><path d="M1 15 V4 Q1 1 4 1 H15" fill="none" stroke="var(--gold)" stroke-width="1.1"/></svg></div>
+    <div class="crest">
+      <div class="ring">
+        <svg viewBox="0 0 28 28" aria-hidden="true">
+          <g fill="var(--gold-deep)">
+            <ellipse cx="14" cy="10" rx="3.2" ry="7.2"/>
+            <ellipse cx="14" cy="10" rx="3.2" ry="7.2" transform="rotate(35 14 14)"/>
+            <ellipse cx="14" cy="10" rx="3.2" ry="7.2" transform="rotate(-35 14 14)"/>
+            <ellipse cx="14" cy="10" rx="3.2" ry="7.2" transform="rotate(70 14 14)"/>
+            <ellipse cx="14" cy="10" rx="3.2" ry="7.2" transform="rotate(-70 14 14)"/>
+          </g>
+          <circle cx="14" cy="14" r="3.4" fill="var(--gold-light)"/>
+        </svg>
+      </div>
+    </div>
     <h3 id="paywallTitle">निःशुल्क सीमा पूरी हुई</h3>
     <p id="paywallText">आपने 3 प्रश्न पूछ लिए हैं। आगे बातचीत जारी रखने के लिए कृपया दक्षिणा अर्पित करें।</p>
     <a class="modal-btn" href="subscribe.html" target="_blank" rel="noopener" id="paywallBtn">दक्षिणा दें</a>
@@ -235,7 +344,24 @@ header .sub{
 
 <div class="modal-overlay" id="langModal">
   <div class="modal-card">
-    <svg class="icon-mark" viewBox="0 0 40 24" aria-hidden="true"><path d="M2 22 C 14 12, 26 6, 30 2" stroke="var(--slate)" stroke-width="1" fill="none"/><circle cx="34" cy="6" r="4" fill="var(--slate)"/></svg>
+    <div class="corner tl"><svg viewBox="0 0 16 16"><path d="M1 15 V4 Q1 1 4 1 H15" fill="none" stroke="var(--slate)" stroke-width="1.1"/></svg></div>
+    <div class="corner tr"><svg viewBox="0 0 16 16"><path d="M1 15 V4 Q1 1 4 1 H15" fill="none" stroke="var(--slate)" stroke-width="1.1"/></svg></div>
+    <div class="corner bl"><svg viewBox="0 0 16 16"><path d="M1 15 V4 Q1 1 4 1 H15" fill="none" stroke="var(--slate)" stroke-width="1.1"/></svg></div>
+    <div class="corner br"><svg viewBox="0 0 16 16"><path d="M1 15 V4 Q1 1 4 1 H15" fill="none" stroke="var(--slate)" stroke-width="1.1"/></svg></div>
+    <div class="crest">
+      <div class="ring" style="border-color:var(--slate)">
+        <svg viewBox="0 0 28 28" aria-hidden="true">
+          <g fill="var(--slate)">
+            <ellipse cx="14" cy="10" rx="3.2" ry="7.2"/>
+            <ellipse cx="14" cy="10" rx="3.2" ry="7.2" transform="rotate(35 14 14)"/>
+            <ellipse cx="14" cy="10" rx="3.2" ry="7.2" transform="rotate(-35 14 14)"/>
+            <ellipse cx="14" cy="10" rx="3.2" ry="7.2" transform="rotate(70 14 14)"/>
+            <ellipse cx="14" cy="10" rx="3.2" ry="7.2" transform="rotate(-70 14 14)"/>
+          </g>
+          <circle cx="14" cy="14" r="3.4" fill="var(--slate-deep)"/>
+        </svg>
+      </div>
+    </div>
     <h3 id="langTitle">अपनी भाषा चुनें / Choose your language</h3>
     <div class="lang-btn-row">
       <button class="lang-choice" data-lang="hi">हिंदी</button>
@@ -249,6 +375,25 @@ header .sub{
 var WEBHOOK_URL = "https://ishikagarg.app.n8n.cloud/webhook/gita-voice";
 var chat=document.getElementById("chat"),input=document.getElementById("msg"),btn=document.getElementById("send"),mic=document.getElementById("mic");
 var LOTUS=String.fromCodePoint(129719),PRAY=String.fromCodePoint(128591);
+
+/* ---- ambient gold dust particles ---- */
+(function initDust(){
+  var wrap = document.getElementById("dust");
+  var COUNT = 10;
+  for(var i=0;i<COUNT;i++){
+    var d = document.createElement("div");
+    d.className = "mote";
+    var size = 2 + Math.random()*3;
+    d.style.width = size+"px";
+    d.style.height = size+"px";
+    d.style.left = (Math.random()*100)+"%";
+    d.style.top = (30+Math.random()*70)+"%";
+    var dur = 20 + Math.random()*20;
+    d.style.animationDuration = dur+"s";
+    d.style.animationDelay = (-Math.random()*dur)+"s";
+    wrap.appendChild(d);
+  }
+})();
 
 /* ---- safe storage helpers (never crash if storage is blocked) ---- */
 function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
