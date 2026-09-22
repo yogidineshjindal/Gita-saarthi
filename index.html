@@ -1,1175 +1,561 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#080616">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Shri Krishna Vani</title>
 
+<html lang="hi"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>श्री कृष्ण वाणी</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Tiro+Devanagari+Hindi&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;width:100%;height:100%;overflow:hidden}
-body{font-family:"DM Sans",Arial,sans-serif;background:#080616;color:#fff}
-button,input{font:inherit}
-button{touch-action:manipulation}
-
-:root{
- --gold:#ffd76b;
- --gold2:#e6a52e;
- --cream:#fff1c7;
- --purple:#17102e;
- --glass:rgba(9,7,28,.72);
+html,body{height:100%;margin:0;}
+body{
+  font-family:'Tiro Devanagari Hindi',Poppins,-apple-system,Segoe UI,Roboto,sans-serif;
+  color:#f3f0ff;
+  display:flex;
+  flex-direction:column;
+  height:100dvh;
+  overflow:hidden;
+  position:relative;
+  background:
+    linear-gradient(180deg, rgba(8,6,16,0.35) 0%, rgba(8,6,16,0.35) 30%, rgba(8,6,16,0.6) 55%, rgba(6,4,12,0.88) 78%, rgba(5,3,10,0.96) 100%),
+    url('krishna-header.jpg') 40% center / cover no-repeat fixed;
 }
 
-/* =========================================================
-   FULL SCREEN
-========================================================= */
-.app{
- position:relative;
- width:100%;
- height:100dvh;
- min-height:100svh;
- overflow:hidden;
- isolation:isolate;
- background:#080616;
+header{
+position;
+z-index:2;
+text-align;
+padding:22px 20px 16px;
+flex-shrink:0;
 }
-
-/* =========================================================
-   BACKGROUND
-   Uses your own hosted image (same file as the profile/chat
-   header) instead of an external hotlinked picture, so it
-   loads reliably and matches the rest of the site. Replace
-   krishna-header.jpg in your repo with any image you prefer
-   -- this file name is the only thing referenced here.
-========================================================= */
-.background{
- position:absolute;
- inset:0;
- z-index:-10;
- overflow:hidden;
- background:
-   radial-gradient(circle at 70% 25%,#4c2c12 0%,#1d1231 38%,#080616 80%);
+.menu-wrap{position;top:14px;left:14px;z-index:5}
+.menu-btn{
+width:36px;height:36px;border-radius:10px;border:1px solid rgba(255,217,138,0.4);
+background(10,7,20,0.55);
+display;flex-direction;align-items;justify-content;gap:4px;
+cursor;
+backdrop-filter(6px);-webkit-backdrop-filter(6px);
+box-shadow:0 2px 8px rgba(0,0,0,0.3);
 }
-
-.background-image{
- position:absolute;
- inset:0;
- background-image:url("krishna-header.jpg");
- background-repeat:no-repeat;
- background-size:cover;
- background-position:38% 28%;
- filter:saturate(1.08) contrast(1.04);
- transform:scale(1.03);
+.menu-btn span{
+display;width:18px;height:2px;border-radius:2px;
+background:#ffd98a;
+box-shadow:0 0 4px rgba(255,196,84,0.6);
 }
-
-/* Dark cinematic overlay keeps text readable on every phone. */
-.background-overlay{
- position:absolute;
- inset:0;
- background:
-   radial-gradient(circle at 58% 26%,rgba(255,205,110,.16),transparent 34%),
-   linear-gradient(180deg,
-      rgba(20,12,10,.10) 0%,
-      rgba(20,12,10,.06) 24%,
-      rgba(18,10,20,.40) 58%,
-      rgba(10,6,20,.90) 100%),
-   linear-gradient(90deg,
-      rgba(20,10,10,.42) 0%,
-      rgba(20,10,10,.08) 55%,
-      rgba(10,6,20,.38) 100%);
+.menu-dropdown{
+position;top:40px;left:0;min-width:150px;
+background(180deg,#241a3f,#150f28);
+border:1px solid rgba(255,217,138,0.25);border-radius:12px;
+box-shadow:0 12px 30px rgba(0,0,0,0.5);
+overflow;display;
 }
-
-/* Soft golden light */
-.background-light{
- position:absolute;
- width:60vmax;height:60vmax;
- right:-30vmax;top:-25vmax;
- border-radius:50%;
- background:rgba(255,190,65,.16);
- filter:blur(60px);
+.menu-dropdown.show{display}
+.menu-item{
+padding:12px 16px;font-size:13.5px;color:#f3f0ff;cursor;
+text-align;background;border;width:100%;
+font-family;
 }
-.background-light2{
- position:absolute;
- width:46vmax;height:46vmax;
- left:-20vmax;bottom:-22vmax;
- border-radius:50%;
- background:rgba(255,140,60,.10);
- filter:blur(70px);
+.menu-item(){border-bottom:1px solid rgba(255,217,138,0.12)}
+.menu-item{background(255,217,138,0.1)}
+.om-line{font-size:13px;letter-spacing:3px;color:#ffd98a;opacity:0.85;margin-bottom:6px}
+header .title{
+font-size:27px;
+font-weight:700;
+letter-spacing:.5px;
+color:#fff;
+text-shadow:0 2px 12px rgba(0,0,0,0.75), 0 0 22px rgba(255,196,84,0.45);
 }
-
-/* =========================================================
-   DECORATIVE PARTICLES
-========================================================= */
-.particles{position:absolute;inset:0;pointer-events:none;z-index:1}
-.particles span{
- position:absolute;width:3px;height:3px;border-radius:50%;
- background:#ffd96e;
- box-shadow:0 0 12px #ffd96e;
- opacity:.55;
- animation:float 7s ease-in-out infinite;
+header .sub{
+font-size:14px;
+color:#ffe9c2;
+margin-top:6px;
+font-weight:400;
+letter-spacing:.2px;
+text-shadow:0 1px 6px rgba(0,0,0,0.85);
 }
-.particles span:nth-child(1){left:8%;top:27%;animation-delay:0s}
-.particles span:nth-child(2){left:21%;top:55%;animation-delay:1s}
-.particles span:nth-child(3){left:36%;top:18%;animation-delay:2s}
-.particles span:nth-child(4){left:68%;top:21%;animation-delay:3s}
-.particles span:nth-child(5){left:87%;top:35%;animation-delay:4s}
-.particles span:nth-child(6){left:78%;top:67%;animation-delay:1.5s}
-.particles span:nth-child(7){left:15%;top:74%;animation-delay:3.5s}
-.particles span:nth-child(8){left:55%;top:43%;animation-delay:5s}
-@keyframes float{
- 0%,100%{transform:translateY(0) scale(.7);opacity:.15}
- 50%{transform:translateY(-18px) scale(1.25);opacity:.8}
+.divider{
+width:70px;height:1.5px;margin:12px auto 0;
+background(90deg, transparent, #ffd98a, transparent);
 }
-
-/* =========================================================
-   TOP BAR
-========================================================= */
-.topbar{
- position:absolute;
- z-index:20;
- left:0;right:0;top:0;
- height:72px;
- padding:
-   max(10px,env(safe-area-inset-top))
-   max(12px,env(safe-area-inset-right))
-   10px
-   max(12px,env(safe-area-inset-left));
- display:flex;
- align-items:flex-end;
- justify-content:space-between;
-}
-
-.icon{
- width:42px;height:42px;
- border-radius:14px;
- border:1px solid rgba(255,215,107,.25);
- background:rgba(7,5,25,.52);
- color:#ffe6a0;
- display:flex;
- align-items:center;
- justify-content:center;
- backdrop-filter:blur(15px);
- -webkit-backdrop-filter:blur(15px);
- box-shadow:0 5px 18px rgba(0,0,0,.2);
- cursor:pointer;
- transition:transform .15s ease, box-shadow .15s ease;
-}
-.icon:active{
- transform:scale(.92);
- box-shadow:0 2px 10px rgba(255,190,70,.25);
-}
-
-.menu{
- display:flex;
- flex-direction:column;
- gap:4px;
-}
-.menu i{
- display:block;
- width:18px;height:2px;
- border-radius:2px;
- background:#ffe6a0;
-}
-
-.brand{
- display:flex;
- align-items:center;
- gap:7px;
- padding:8px 16px;
- border-radius:999px;
- border:1px solid rgba(255,215,107,.32);
- background:linear-gradient(135deg,rgba(40,26,10,.55),rgba(10,7,25,.45));
- color:#fff0bf;
- font:600 13px "Playfair Display",serif;
- backdrop-filter:blur(12px);
- -webkit-backdrop-filter:blur(12px);
- box-shadow:0 4px 20px rgba(255,180,60,.12), inset 0 1px 0 rgba(255,255,255,.06);
-}
-.brand b{color:#ffd86d;font-size:17px;text-shadow:0 0 10px rgba(255,200,90,.5)}
-
-/* =========================================================
-   HERO
-========================================================= */
-.hero{
- position:absolute;
- z-index:4;
- top:0;left:0;right:0;
- height:56%;
- padding:clamp(82px,12vh,118px) 18px 0;
- display:flex;
- flex-direction:column;
- align-items:center;
- text-align:center;
- pointer-events:none;
-}
-
-.om{
- width:55px;height:55px;
- border-radius:50%;
- display:flex;
- align-items:center;
- justify-content:center;
- border:1px solid rgba(255,215,107,.62);
- background:radial-gradient(circle,rgba(60,38,14,.55),rgba(9,6,27,.32));
- color:#ffd86b;
- font:38px Georgia,serif;
- text-shadow:0 0 18px rgba(255,200,65,.6);
- box-shadow:
-   0 0 35px rgba(255,190,60,.28),
-   inset 0 0 20px rgba(255,215,107,.1);
- backdrop-filter:blur(8px);
- animation:omGlow 3.6s ease-in-out infinite, fadeUp .7s ease both;
-}
-
-.title{
- margin-top:13px;
- font:700 clamp(32px,8vw,62px)/1.05 "Playfair Display",serif;
- background:linear-gradient(180deg,#fff7e0 0%,#ffe9ad 55%,#f3c96a 100%);
- -webkit-background-clip:text;
- background-clip:text;
- color:transparent;
- text-shadow:
-   0 3px 10px rgba(0,0,0,.7),
-   0 0 34px rgba(255,210,100,.28);
- animation:fadeUp .7s .08s ease both;
-}
-
-.subtitle{
- margin-top:9px;
- font:600 clamp(15px,3.7vw,23px)/1.45 "Playfair Display",serif;
- color:#fff;
- text-shadow:0 2px 12px #000;
- animation:fadeUp .7s .16s ease both;
-}
-.subtitle strong{color:#ffd86b}
-
-.ornament{
- display:flex;
- align-items:center;
- gap:10px;
- margin:13px 0 7px;
- color:#ffd86b;
- font-size:13px;
- animation:fadeUp .7s .22s ease both;
-}
-.ornament:before,.ornament:after{
- content:"";
- width:55px;height:1px;
- background:linear-gradient(90deg,transparent,#ffd86b);
-}
-.ornament:after{background:linear-gradient(90deg,#ffd86b,transparent)}
-
-.quote{
- position:relative;
- max-width:580px;
- padding:0 18px;
- color:#fff5dc;
- font:600 clamp(13px,2.6vw,17px)/1.6 "Playfair Display",serif;
- text-shadow:0 2px 12px #000;
- animation:fadeUp .7s .28s ease both;
-}
-.quote:before,.quote:after{
- position:absolute;
- font:italic 900 34px/1 Georgia,serif;
- color:rgba(255,216,107,.55);
-}
-.quote:before{content:"“";left:-6px;top:-10px}
-.quote:after{content:"”";right:-6px;bottom:-22px}
-.quote small{
- display:block;
- margin-top:5px;
- color:#e3d7bd;
- font:400 11px/1.5 "DM Sans",sans-serif;
- letter-spacing:.2px;
-}
-
-@keyframes fadeUp{
- from{opacity:0;transform:translateY(14px)}
- to{opacity:1;transform:none}
-}
-@keyframes omGlow{
- 0%,100%{box-shadow:0 0 35px rgba(255,190,60,.24),inset 0 0 20px rgba(255,215,107,.08)}
- 50%{box-shadow:0 0 46px rgba(255,190,60,.42),inset 0 0 24px rgba(255,215,107,.16)}
-}
-
-/* =========================================================
-   QUESTION SUGGESTIONS
-========================================================= */
-.suggestions{
- position:absolute;
- z-index:8;
- left:50%;
- bottom:128px;
- transform:translateX(-50%);
- width:min(820px,calc(100% - 22px));
- text-align:center;
- transition:.25s ease;
-}
-.suggestions.hide{
- opacity:0;
- pointer-events:none;
- transform:translateX(-50%) translateY(8px);
-}
-
-.suggestion-title{
- margin-bottom:10px;
- font:600 12px "Playfair Display",serif;
- letter-spacing:.3px;
- color:#ffe9b8;
- text-shadow:0 2px 10px #000;
-}
-
-.chips{
- display:flex;
- justify-content:center;
- flex-wrap:wrap;
- gap:8px;
-}
-
-.chip{
- border:1px solid rgba(255,215,107,.3);
- background:linear-gradient(135deg,rgba(45,28,10,.55),rgba(7,5,27,.55));
- color:#fff0c4;
- border-radius:999px;
- padding:8px 13px;
- font-size:11px;
- cursor:pointer;
- backdrop-filter:blur(12px);
- -webkit-backdrop-filter:blur(12px);
- box-shadow:0 4px 14px rgba(0,0,0,.25);
- transition:transform .15s ease, border-color .15s ease, box-shadow .15s ease;
-}
-.chip:active{
- transform:scale(.96);
- border-color:rgba(255,220,130,.7);
- box-shadow:0 2px 16px rgba(255,190,70,.28);
-}
-
-/* =========================================================
-   START CTA
-   (label text removed on request -- section kept as an empty
-   spacer so the layout above/below doesn't shift)
-========================================================= */
-.start{
- position:absolute;
- z-index:9;
- left:50%;
- bottom:129px;
- transform:translateX(-50%);
- width:min(480px,calc(100% - 24px));
- text-align:center;
- transition:.25s ease;
-}
-.start.hide{
- opacity:0;
- pointer-events:none;
- transform:translateX(-50%) translateY(8px);
-}
-
-.start-label{
- color:#fff0c9;
- font-size:11px;
- margin-bottom:8px;
- text-shadow:0 2px 10px #000;
-}
-
-.start-btn{
- border:1px solid rgba(255,232,157,.65);
- border-radius:999px;
- padding:12px 23px;
- color:#281900;
- background:linear-gradient(135deg,#ffe78f,#e3a932);
- box-shadow:0 8px 30px rgba(225,163,48,.35);
- font-weight:700;
- cursor:pointer;
-}
-.start-btn:active{transform:scale(.97)}
-
-/* =========================================================
-   CHAT
-========================================================= */
-.chat-panel{
- position:absolute;
- z-index:7;
- top:76px;
- left:50%;
- transform:translateX(-50%);
- width:min(820px,calc(100% - 22px));
- height:calc(100% - 211px);
- display:none;
-}
-.chat-panel.active{display:block}
 
 #chat{
- width:100%;
- height:100%;
- overflow-y:auto;
- padding:2px 2px 15px;
- display:flex;
- flex-direction:column;
- gap:10px;
+position;
+z-index:2;
+flex:1;
+min-height:0;
+overflow-y;
+padding:14px 14px 8px;
+display;
+flex-direction;
+gap:12px;
 }
 #chat::-webkit-scrollbar{width:0}
-
-.row{
- display:flex;
- align-items:flex-end;
- gap:7px;
- animation:pop .22s ease;
-}
-.row.user{flex-direction:row-reverse}
-
-.av{
- width:30px;height:30px;flex:0 0 30px;
- border-radius:50%;
- display:flex;
- align-items:center;
- justify-content:center;
- background:rgba(7,5,27,.82);
- border:1px solid rgba(255,215,107,.35);
- box-shadow:0 3px 12px rgba(0,0,0,.35);
-}
-.av.user{
- background:linear-gradient(135deg,#6374ff,#7551e8);
- border:0;
-}
-
+.row{display;align-items;gap:8px;animation .28s ease}
+.row.user{flex-direction}
+.av{width:30px;height:30px;border-radius:50%;display;align-items;justify-content;font-size:15px;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.35)}
+.av.bot{background(135deg,#ffe08a,#d4af37)}
+.av.user{background(135deg,#6a8dff,#8f6cff)}
 .bubble{
- max-width:82%;
- padding:10px 13px;
- border-radius:16px;
- font-size:13px;
- line-height:1.5;
- white-space:pre-wrap;
- word-break:break-word;
- box-shadow:0 7px 24px rgba(0,0,0,.28);
+max-width:78%;padding:12px 15px;border-radius:18px;line-height:1.6;font-size:15px;
+white-space;word-wrap;
+box-shadow:0 6px 20px rgba(0,0,0,.35);
+backdrop-filter(10px);-webkit-backdrop-filter(10px);
 }
-
-.bot .bubble{
- color:#f8f0dc;
- background:rgba(7,5,27,.73);
- border:1px solid rgba(255,215,107,.13);
- border-bottom-left-radius:5px;
- backdrop-filter:blur(14px);
- -webkit-backdrop-filter:blur(14px);
-}
-.user .bubble{
- color:#fff;
- background:linear-gradient(135deg,#6374ff,#7551e8);
- border-bottom-right-radius:5px;
-}
-
-.typing{display:inline-flex;gap:4px}
-.typing i{
- width:6px;height:6px;border-radius:50%;
- background:#ffd76b;
- animation:blink 1.2s infinite;
-}
-.typing i:nth-child(2){animation-delay:.2s}
-.typing i:nth-child(3){animation-delay:.4s}
-
-.play{
- margin-top:7px;
- padding:6px 11px;
- border-radius:13px;
- border:1px solid rgba(255,215,107,.3);
- background:rgba(255,215,107,.08);
- color:#ffd76b;
- cursor:pointer;
- font-size:11px;
-}
-
-/* =========================================================
-   INPUT / COMPOSER
-   (label text above the bar removed on request)
-========================================================= */
-.composer{
- position:absolute;
- z-index:30;
- left:50%;
- bottom:max(8px,env(safe-area-inset-bottom));
- transform:translateX(-50%);
- width:min(850px,calc(100% - 18px));
-}
-
-.composer-label{
- text-align:center;
- margin-bottom:6px;
- color:#fff0ca;
- font-size:11px;
- text-shadow:0 2px 9px #000;
+.user .bubble{background(106,141,255,0.55);color:#fff;border:1px solid rgba(255,255,255,0.18);border-bottom-right-radius:6px}
+.bot .bubble{background(20,14,34,0.55);border:1px solid rgba(255,217,138,0.22);color:#f6f1ff;border-bottom-left-radius:6px}
+.typing{display;gap:4px;align-items}
+.typing i{width:7px;height:7px;border-radius:50%;background:#c9b8ff;display;animation 1.2s infinite}
+.typing i(2){animation-delay:.2s}.typing i(3){animation-delay:.4s}
+.playbtn{
+display;align-items;gap:5px;margin-top:8px;
+background(255,217,138,0.14);border:1px solid rgba(255,217,138,0.35);
+color:#ffd98a;padding:6px 14px;border-radius:14px;font-size:12.5px;font-family;cursor;
 }
 
 #bar{
- display:flex;
- align-items:center;
- gap:7px;
- padding:7px;
- border-radius:22px;
- border:1px solid rgba(255,215,107,.3);
- background:linear-gradient(135deg,rgba(20,13,8,.82),rgba(6,4,25,.82));
- box-shadow:
-   0 14px 45px rgba(0,0,0,.44),
-   0 0 0 1px rgba(255,200,90,.05),
-   inset 0 1px 0 rgba(255,255,255,.06);
- backdrop-filter:blur(20px);
- -webkit-backdrop-filter:blur(20px);
- transition:box-shadow .2s ease, border-color .2s ease;
+position;z-index:2;
+display;gap:8px;
+flex-shrink:0;
+padding:12px 12px calc(12px + env(safe-area-inset-bottom));
+background(10,7,20,0.55);
+backdrop-filter(14px);-webkit-backdrop-filter(14px);
+border-top:1px solid rgba(255,217,138,0.18);
 }
-#bar:focus-within{
- border-color:rgba(255,220,130,.6);
- box-shadow:
-   0 14px 45px rgba(0,0,0,.44),
-   0 0 0 3px rgba(255,200,90,.14),
-   inset 0 1px 0 rgba(255,255,255,.06);
-}
-
 #msg{
- flex:1;
- min-width:0;
- border:0;
- outline:0;
- background:transparent;
- color:#fff;
- padding:11px 7px;
- font-size:14px;
+flex:1;min-width:0;padding:13px 16px;border-radius:24px;
+border:1px solid rgba(255,217,138,0.25);
+background(255,255,255,0.08);
+color:#fff;font-size:16px;font-family;outline;transition .2s;
 }
-#msg::placeholder{color:#aaa4b8}
+#msg::placeholder{color:#c9bfe8}
+#msg
+#mic,#send{width:50px;height:50px;flex-shrink:0;border-radius:50%;display;align-items;justify-content;cursor;transition .15s}
+#mic svg,#send svg{width:22px;height:22px}
+#mic{border:1px solid rgba(255,217,138,0.35);background(255,217,138,0.12);color:#ffd98a;touch-action;user-select;-webkit-user-select}
+#mic.rec{background(135deg,#ff5f6d,#ff2d55);color:#fff;border-color;animation 1s infinite}
+#send{border;background(135deg,#ffb347,#ff7e5f);color:#fff;box-shadow:0 4px 14px rgba(255,126,95,.5)}
+#send,#mic{transform(.9)}
+@keyframes pop{from{opacity:0;transform(8px)}to{opacity:1;transform}}
+@keyframes blink{0%,60%,100%{opacity:.3}30%{opacity:1}}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,45,85,.6)}70%{box-shadow:0 0 0 12px rgba(255,45,85,0)}100%{box-shadow:0 0 0 0 rgba(255,45,85,0)}}
 
-#mic,#send{
- width:45px;height:45px;flex:0 0 45px;
- border-radius:50%;
- display:flex;
- align-items:center;
- justify-content:center;
- cursor:pointer;
+.modal-overlay{
+position;inset:0;z-index:50;
+background(5,3,10,0.72);
+display;align-items;justify-content;
+padding:24px;
+opacity:0;pointer-events;
+transition .25s ease;
 }
-
-#mic{
- border:1px solid rgba(255,215,107,.35);
- background:rgba(255,255,255,.07);
- color:#ffd76b;
- touch-action:none;
- user-select:none;
- -webkit-user-select:none;
- transition:transform .15s ease;
-}
-#mic:active{transform:scale(.92)}
-
-#mic.rec{
- background:linear-gradient(135deg,#ff5d70,#dc214c);
- color:#fff;
- border-color:transparent;
- animation:pulse 1s infinite;
-}
-
-#send{
- border:0;
- color:#2a1a00;
- background:linear-gradient(135deg,#ffe38a,#e6a832);
- box-shadow:0 5px 18px rgba(230,166,50,.4), inset 0 1px 0 rgba(255,255,255,.4);
- transition:transform .15s ease, box-shadow .15s ease;
-}
-#send:active{
- transform:scale(.92);
- box-shadow:0 3px 10px rgba(230,166,50,.5);
-}
-
-#mic svg,#send svg{width:20px;height:20px}
-
-/* =========================================================
-   MODAL
-========================================================= */
-.modal{
- position:fixed;
- inset:0;
- z-index:100;
- display:none;
- align-items:center;
- justify-content:center;
- padding:18px;
- background:rgba(0,0,0,.70);
- backdrop-filter:blur(6px);
- -webkit-backdrop-filter:blur(6px);
-}
-.modal.show{display:flex}
-
+.modal-overlay.show{opacity:1;pointer-events}
 .modal-card{
- width:min(390px,100%);
- padding:26px 22px 20px;
- text-align:center;
- border-radius:24px;
- border:1px solid rgba(255,215,107,.3);
- background:linear-gradient(160deg,#241944,#0e0b25);
- box-shadow:0 25px 80px rgba(0,0,0,.6);
+background(180deg,#241a3f,#150f28);
+border:1px solid rgba(255,217,138,0.25);
+border-radius:18px;
+padding:26px 24px 22px;
+max-width:320px;width:100%;
+text-align;
+box-shadow:0 30px 60px rgba(0,0,0,0.5);
+transform(10px);
+transition .25s ease;
 }
-.modal-icon{font-size:31px}
-.modal-title{
- margin-top:8px;
- color:#ffe08a;
- font:700 24px "Playfair Display",serif;
+.modal-overlay.show .modal-card{transform(0)}
+.modal-card .icon{font-size:34px;margin-bottom:10px}
+.modal-card h3{margin:0 0 10px;font-size:18px;font-weight:700;color:#ffd98a}
+.modal-card p{margin:0 0 20px;font-size:13.5px;color:#d8cdf0;line-height:1.6}
+.modal-btn{
+display;width:100%;
+background(135deg,#ffd98a,#d4af37);
+color:#241a3f;font-weight:700;font-size:14.5px;
+padding:12px 0;border-radius:12px;
+text-decoration;border;cursor;
 }
-.modal-text{
- margin:10px auto 18px;
- max-width:310px;
- color:#dcd2e8;
- font-size:12px;
- line-height:1.65;
+.modal-close{
+display;margin:14px auto 0;
+background;border;color:#9a90bb;
+font-size:12.5px;cursor;
 }
-.modal-primary{
- width:100%;
- border:0;
- border-radius:13px;
- padding:12px;
- background:linear-gradient(135deg,#ffe083,#e6ad38);
- color:#2a1a00;
- font-weight:700;
- cursor:pointer;
+.lang-btn-row{display;flex-direction;gap:10px;margin-top:6px}
+.lang-choice{
+display;width:100%;padding:13px 0;border-radius:12px;
+background(255,217,138,0.1);border:1px solid rgba(255,217,138,0.35);
+color:#ffd98a;font-size:15px;font-weight:600;cursor;font-family;
 }
-.modal-secondary{
- margin-top:10px;
- border:0;
- background:transparent;
- color:#aaa0c0;
- cursor:pointer;
- font-size:11px;
-}
+.lang-choice{background(255,217,138,0.2)}
+.profile-row{display;justify-content;font-size:13.5px;color:#d8cdf0;padding:8px 0;border-bottom:1px solid rgba(255,217,138,0.12)}
+.profile-row
+</style></head><body>
 
-/* =========================================================
-   RESPONSIVE PHONE
-========================================================= */
-@media(max-width:600px){
- .background-image{
-   /* Portrait phones: keep Krishna's figure central-left in frame. */
-   background-position:32% 24%;
- }
- .hero{
-   height:55%;
-   padding-top:82px;
- }
- .om{width:50px;height:50px;font-size:33px}
- .title{font-size:34px}
- .subtitle{font-size:15px}
- .quote{max-width:350px;font-size:13px}
- .suggestions{bottom:124px}
- .start{bottom:124px}
- .chat-panel{
-   top:72px;
-   height:calc(100% - 196px);
- }
- .composer{bottom:max(7px,env(safe-area-inset-bottom))}
- .composer-label{font-size:10px}
- #bar{padding:6px;border-radius:20px}
- #msg{font-size:13px;padding:10px 5px}
- #mic,#send{width:43px;height:43px;flex-basis:43px}
-}
-
-@media(max-width:380px){
- .topbar{height:63px}
- .icon{width:39px;height:39px}
- .brand{padding:6px 9px;font-size:11px}
- .brand b{font-size:15px}
- .hero{padding-top:73px}
- .om{width:44px;height:44px;font-size:28px}
- .title{font-size:29px}
- .subtitle{font-size:13px;margin-top:6px}
- .quote{font-size:11.5px}
- .quote small{font-size:9.5px}
- .suggestions,.start{bottom:119px}
- .chip{font-size:9.5px;padding:6px 8px}
- .composer-label{display:none}
- #msg{font-size:12px}
- #mic,#send{width:40px;height:40px;flex-basis:40px}
-}
-
-@media(max-height:520px) and (orientation:landscape){
- .hero{padding-top:62px;height:70%}
- .om{width:40px;height:40px;font-size:26px}
- .title{font-size:27px}
- .subtitle{font-size:13px;margin-top:4px}
- .ornament{margin:5px 0}
- .quote{font-size:11px;line-height:1.35}
- .suggestions,.start{bottom:88px}
- .chat-panel{top:55px;height:calc(100% - 135px)}
- .composer{bottom:5px}
- .composer-label{display:none}
-}
-
-@keyframes pop{
- from{opacity:0;transform:translateY(6px)}
- to{opacity:1;transform:none}
-}
-@keyframes blink{
- 0%,60%,100%{opacity:.25}
- 30%{opacity:1}
-}
-@keyframes pulse{
- 0%{box-shadow:0 0 0 0 rgba(255,45,85,.5)}
- 70%{box-shadow:0 0 0 11px rgba(255,45,85,0)}
- 100%{box-shadow:0 0 0 0 rgba(255,45,85,0)}
-}
-</style>
-</head>
-
-<body>
-<div class="app">
-
-  <!-- Background -->
-  <div class="background">
-    <div class="background-image"></div>
-    <div class="background-overlay"></div>
-    <div class="background-light"></div>
-    <div class="background-light2"></div>
-  </div>
-
-  <div class="particles">
-    <span></span><span></span><span></span><span></span>
-    <span></span><span></span><span></span><span></span>
-  </div>
-
-  <!-- TOP -->
-  <header class="topbar">
-    <button class="icon" id="menuBtn" aria-label="Menu">
-      <span class="menu">
-        <i></i><i></i><i></i>
-      </span>
-    </button>
-
-    <div class="brand">
-      <b>ॐ</b>
-      <span>Shri Krishna Vani</span>
-    </div>
-
-    <button class="icon" id="aboutBtn" aria-label="About">🪷</button>
-  </header>
-
-  <!-- HERO -->
-  <section class="hero">
-    <div class="om">ॐ</div>
-
-    <div class="title">Shri Krishna Vani</div>
-
-    <div class="subtitle">
-      <strong>Har prashn ka uttar,</strong><br>
-      Gita ke prakash mein
-    </div>
-
-    <div class="ornament">✦</div>
-
-    <div class="quote">
-      “Jab mann mein koi uljhan ho,<br>
-      shanti se apni baat kahiye.”
-      <small>Gita ke gyaan se apne prashn ka margdarshan paaiye.</small>
-    </div>
-  </section>
-
-  <!-- SUGGESTED QUESTIONS -->
-  <section class="suggestions" id="suggestions">
-    <div class="suggestion-title">
-      Aaj Shri Krishna se kya poochna chahenge?
-    </div>
-
-    <div class="chips">
-      <button class="chip" data-question="Krishna ji, mere mann ko shanti kaise milegi?">
-        🌿 Mann ki shanti
-      </button>
-
-      <button class="chip" data-question="Krishna ji, rishton mein uljhan ho to kya karna chahiye?">
-        ❤️ Rishton ki uljhan
-      </button>
-
-      <button class="chip" data-question="Krishna ji, jeevan mein sahi marg kaise chunoon?">
-        🪷 Jeevan ka marg
-      </button>
-
-      <button class="chip" data-question="Krishna ji, mujhe bhavishya ko lekar chinta hoti hai. Main kya karun?">
-        ✨ Bhavishya ki chinta
-      </button>
-    </div>
-  </section>
-
-  <!-- START (label text removed, spacer kept for layout) -->
-  <section class="start" id="startCard"></section>
-
-  <!-- CHAT -->
-  <section class="chat-panel" id="chatPanel">
-    <div id="chat"></div>
-  </section>
-
-  <!-- INPUT -->
-  <section class="composer">
-    <div id="bar">
-
-      <button id="mic" title="Bolein" aria-label="Voice input">
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3z"/>
-          <path d="M19 11a1 1 0 1 0-2 0 5 5 0 0 1-10 0 1 1 0 1 0-2 0 7 7 0 0 0 6 6.92V21a1 1 0 1 0 2 0v-3.08A7 7 0 0 0 19 11z"/>
-        </svg>
-      </button>
-
-      <input
-        id="msg"
-        autocomplete="off"
-      >
-
-      <button id="send" title="Bhejein" aria-label="Send">
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <path d="M3.4 20.4l17.45-7.48a1 1 0 0 0 0-1.84L3.4 3.6a1 1 0 0 0-1.4.92V9.6a1 1 0 0 0 .78.98L14 12 2.78 13.42a1 1 0 0 0-.78.98v5.08a1 1 0 0 0 1.4.92z"/>
-        </svg>
-      </button>
-
-    </div>
-  </section>
-
-  <!-- CONTRIBUTION POPUP -->
-  <div class="modal" id="limitModal">
-    <div class="modal-card">
-      <div class="modal-icon">🪷</div>
-
-      <div class="modal-title">
-        Aapki yatra yahin nahi rukti
-      </div>
-
-      <div class="modal-text">
-        Shri Krishna Vani ko aur logon tak pahunchane mein
-        aapka sahyog is seva ko aage badhane mein madad karta hai.
-      </div>
-
-      <button class="modal-primary" id="contributeBtn">
-        🙏 Sahayog Karein
-      </button>
-
-      <button class="modal-secondary" id="closeModal">
-        Baad mein
-      </button>
+<header>
+  <div class="menu-wrap">
+    <button class="menu-btn" id="menuBtn" title="Menu"><span></span><span></span><span></span></button>
+    <div class="menu-dropdown" id="menuDropdown">
+      <button class="menu-item" id="menuProfileBtn">प्रोफ़ाइल</button>
+      <button class="menu-item" id="menuLangBtn">भाषा / Language</button>
     </div>
   </div>
+  <div class="om-line">ॐ</div>
+  <div class="title" id="headerTitle">श्री कृष्ण वाणी</div>
+  <div class="divider"></div>
+  <div class="sub" id="headerSub">आपके प्रश्न, श्री कृष्ण के उत्तर</div>
+</header>
 
+<div id="chat"></div>
+
+<div id="bar">
+<button id="mic" title="बोलें"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3z"/><path d="M19 11a1 1 0 1 0-2 0 5 5 0 0 1-10 0 1 1 0 1 0-2 0 7 7 0 0 0 6 6.92V21a1 1 0 1 0 2 0v-3.08A7 7 0 0 0 19 11z"/></svg></button>
+<input id="msg" autocomplete="off">
+<button id="send" title="भेजें"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.4 20.4l17.45-7.48a1 1 0 0 0 0-1.84L3.4 3.6a1 1 0 0 0-1.4.92V9.6a1 1 0 0 0 .78.98L14 12 2.78 13.42a1 1 0 0 0-.78.98v5.08a1 1 0 0 0 1.4.92z"/></svg></button>
+</div>
+
+<div class="modal-overlay" id="subModal">
+  <div class="modal-card">
+    <div class="icon">🪷</div>
+    <h3 id="paywallTitle">निःशुल्क सीमा पूरी हुई</h3>
+    <p id="paywallText">आपने 3 प्रश्न पूछ लिए हैं। आगे बातचीत जारी रखने के लिए कृपया दक्षिणा अर्पित करें।</p>
+    <a class="modal-btn" href="subscribe.html" target="_blank" rel="noopener" id="paywallBtn">दक्षिणा दें</a>
+  </div>
+</div>
+
+<div class="modal-overlay" id="langModal">
+  <div class="modal-card">
+    <div class="icon">🌐</div>
+    <h3 id="langTitle">अपनी भाषा चुनें / Choose your language</h3>
+    <div class="lang-btn-row">
+      <button class="lang-choice" data-lang="hi">हिंदी</button>
+      <button class="lang-choice" data-lang="en">English</button>
+    </div>
+    <button class="modal-close" id="langCloseBtn" style="display:none">बंद करें / Close</button>
+  </div>
 </div>
 
 <script>
-/* =========================================================
-   N8N CONNECTION
-   Your existing webhook URL is retained.
-========================================================= */
-const WEBHOOK_URL =
-  "https://ishikagarg.app.n8n.cloud/webhook/gita-voice";
+var WEBHOOK_URL = "https://ishikagarg.app.n8n.cloud/webhook/gita-voice";
+var chat=document.getElementById("chat"),input=document.getElementById("msg"),btn=document.getElementById("send"),mic=document.getElementById("mic");
+var LOTUS=String.fromCodePoint(129719),PRAY=String.fromCodePoint(128591);
 
-const chat = document.getElementById("chat");
-const chatPanel = document.getElementById("chatPanel");
-const suggestions = document.getElementById("suggestions");
-const startCard = document.getElementById("startCard");
-const input = document.getElementById("msg");
-const sendBtn = document.getElementById("send");
-const mic = document.getElementById("mic");
+/* ---- safe storage helpers (never crash if storage is blocked) ---- */
+function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
 
-const LOTUS = "🪷";
-const PRAY = "🙏";
-
-function openChat(){
-  chatPanel.classList.add("active");
-  suggestions.classList.add("hide");
-  startCard.classList.add("hide");
-}
-
-function addMessage(text, who){
-  openChat();
-
-  const row = document.createElement("div");
-  row.className = "row " + who;
-
-  const avatar = document.createElement("div");
-  avatar.className = "av " + who;
-  avatar.textContent = who === "bot" ? LOTUS : PRAY;
-
-  const bubble = document.createElement("div");
-  bubble.className = "bubble";
-  bubble.textContent = text;
-
-  row.appendChild(avatar);
-  row.appendChild(bubble);
-  chat.appendChild(row);
-
-  chat.scrollTop = chat.scrollHeight;
-  return bubble;
-}
-
-function addTyping(){
-  openChat();
-
-  const row = document.createElement("div");
-  row.className = "row bot";
-
-  const avatar = document.createElement("div");
-  avatar.className = "av bot";
-  avatar.textContent = LOTUS;
-
-  const bubble = document.createElement("div");
-  bubble.className = "bubble";
-
-  const typing = document.createElement("span");
-  typing.className = "typing";
-
-  for(let i=0;i<3;i++){
-    const dot = document.createElement("i");
-    typing.appendChild(dot);
+var TXT = {
+  hi:{
+    title:"श्री कृष्ण वाणी",
+    sub:"आपके प्रश्न, श्री कृष्ण के उत्तर",
+    placeholder:"",
+    micTitle:"बोलें",
+    sendTitle:"भेजें",
+    greeting:"नमस्ते प्रिय मित्र "+PRAY,
+    listening:String.fromCodePoint(127908)+" सुन रहा हूँ...",
+    voiceFallback:String.fromCodePoint(127908)+" (आपकी आवाज़)",
+    noReply:"(कोई उत्तर नहीं)",
+    error:"कुछ गड़बड़ हो गयी: ",
+    micError:"माइक एक्सेस नहीं मिला: ",
+    listenBtn:String.fromCodePoint(128266)+" सुनें",
+    paywallTitle:"निःशुल्क सीमा पूरी हुई",
+    paywallText:"आपने 3 प्रश्न पूछ लिए हैं। आगे बातचीत जारी रखने के लिए कृपया दक्षिणा अर्पित करें।",
+    paywallBtn:"दक्षिणा दें",
+    menuProfile:"प्रोफ़ाइल",
+    menuLang:"भाषा / Language",
+    langTitle:"अपनी भाषा चुनें / Choose your language",
+    langClose:"बंद करें / Close",
+    profileTitle:"प्रोफ़ाइल",
+    profileMsgLabel:"पूछे गए प्रश्न",
+    profileStatusLabel:"स्थिति",
+    profileFree:"निःशुल्क उपयोगकर्ता",
+    profilePaid:"सदस्यता सक्रिय",
+    profileClose:"बंद करें"
+  },
+  en:{
+    title:"Shri Krishna Vani",
+    sub:"Your questions, Shri Krishna's answers",
+    placeholder:"",
+    micTitle:"Speak",
+    sendTitle:"Send",
+    greeting:"Namaste dear friend "+PRAY,
+    listening:String.fromCodePoint(127908)+" Listening...",
+    voiceFallback:String.fromCodePoint(127908)+" (your voice)",
+    noReply:"(no reply)",
+    error:"Something went wrong: ",
+    micError:"Mic access denied: ",
+    listenBtn:String.fromCodePoint(128266)+" Listen",
+    paywallTitle:"Free limit reached",
+    paywallText:"You've asked 3 questions. Please offer a small contribution to continue the conversation.",
+    paywallBtn:"Contribute",
+    menuProfile:"Profile",
+    menuLang:"भाषा / Language",
+    langTitle:"अपनी भाषा चुनें / Choose your language",
+    langClose:"बंद करें / Close",
+    profileTitle:"Profile",
+    profileMsgLabel:"Questions asked",
+    profileStatusLabel:"Status",
+    profileFree:"Free user",
+    profilePaid:"Subscription active",
+    profileClose:"Close"
   }
+};
 
-  bubble.appendChild(typing);
-  row.appendChild(avatar);
-  row.appendChild(bubble);
-  chat.appendChild(row);
+var currentLang = lsGet("krishna_lang");
+var greetingBubble = null;
 
-  chat.scrollTop = chat.scrollHeight;
-  return bubble;
+
+function t(key){
+  var lang = currentLang || "hi";
+  return TXT[lang][key];
 }
 
-function playAudio(base64){
-  const audio = new Audio("data:audio/wav;base64," + base64);
-  audio.play().catch(()=>{});
+function applyStaticText(){
+  document.getElementById("headerTitle").textContent = t("title");
+  document.getElementById("headerSub").textContent = t("sub");
+  input.placeholder = t("placeholder");
+  mic.title = t("micTitle");
+  btn.title = t("sendTitle");
+  document.getElementById("paywallTitle").textContent = t("paywallTitle");
+  document.getElementById("paywallText").textContent = t("paywallText");
+  document.getElementById("paywallBtn").textContent = t("paywallBtn");
+  document.getElementById("menuProfileBtn").textContent = t("menuProfile");
+  document.getElementById("menuLangBtn").textContent = t("menuLang");
+  document.getElementById("langTitle").textContent = t("langTitle");
+  document.getElementById("langCloseBtn").textContent = t("langClose");
 }
 
-function addPlayButton(bubble, base64){
-  const button = document.createElement("button");
-  button.className = "play";
-  button.textContent = "🔊 Sunein";
-  button.onclick = () => playAudio(base64);
+function add(txt,w){var row=document.createElement("div");row.className="row "+w;var av=document.createElement("div");av.className="av "+w;av.textContent=(w==="bot"?LOTUS:PRAY);var b=document.createElement("div");b.className="bubble";b.textContent=txt;row.appendChild(av);row.appendChild(b);chat.appendChild(row);chat.scrollTop=chat.scrollHeight;return b;}
+function addTyping(){var row=document.createElement("div");row.className="row bot";var av=document.createElement("div");av.className="av bot";av.textContent=LOTUS;var b=document.createElement("div");b.className="bubble";var ty=document.createElement("span");ty.className="typing";ty.appendChild(document.createElement("i"));ty.appendChild(document.createElement("i"));ty.appendChild(document.createElement("i"));b.appendChild(ty);row.appendChild(av);row.appendChild(b);chat.appendChild(row);chat.scrollTop=chat.scrollHeight;return b;}
+function play(b64){var a=new Audio("data:audio/wav;base64,"+b64);a.play();}
+function addPlay(bubble,b64){var pb=document.createElement("button");pb.className="playbtn";pb.textContent=t("listenBtn");pb.onclick=function(){play(b64);};bubble.appendChild(document.createElement("br"));bubble.appendChild(pb);}
 
-  bubble.appendChild(document.createElement("br"));
-  bubble.appendChild(button);
+/* ---- free-question limit (saved in the browser, survives reload) ---- */
+var FREE_LIMIT = 3;
+var msgCount = parseInt(lsGet("krishna_msgcount") || "0", 10);
+if(isNaN(msgCount)) msgCount = 0;
+function bumpCount(){
+  msgCount++;
+  lsSet("krishna_msgcount", String(msgCount));
+}
+var subModal = document.getElementById("subModal");
+var langModal = document.getElementById("langModal");
+
+function isUnlocked(){
+  return lsGet("krishna_unlocked") === "true";
+}
+function showPaywall(){
+  subModal.classList.add("show");
+}
+function canSendMessage(){
+  if(isUnlocked()) return true;
+  if(msgCount >= FREE_LIMIT){
+    showPaywall();
+    return false;
+  }
+  return true;
 }
 
-/* =========================================================
-   TEXT CHAT
-========================================================= */
-async function sendText(){
-  const message = input.value.trim();
-  if(!message) return;
+/* ---- device id (sent to the server so the limit can be enforced there too) ---- */
+function getDeviceId(){
+  var id = lsGet("krishna_device");
+  if(!id){
+    id = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ("d-" + Date.now() + "-" + Math.random().toString(36).slice(2));
+    lsSet("krishna_device", id);
+  }
+  return id;
+}
 
-  addMessage(message,"user");
-  input.value = "";
-
-  const loading = addTyping();
-
+/* ---- chat history (saved in the browser, restored after reload) ---- */
+var HISTORY_KEY = "krishna_history";
+var MAX_HISTORY = 40;
+function loadHistory(){
   try{
-    const response = await fetch(WEBHOOK_URL,{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({
-        message:message,
-        sessionId:"mobile-user"
-      })
-    });
-
-    const data = await response.json();
-
-    loading.textContent =
-      data.reply || "(no reply)";
-
-    if(data.audioBase64){
-      addPlayButton(loading,data.audioBase64);
-      playAudio(data.audioBase64);
+    var h = JSON.parse(lsGet(HISTORY_KEY) || "[]");
+    return Array.isArray(h) ? h : [];
+  }catch(e){ return []; }
+}
+function saveHistory(w, txt){
+  if(!txt) return;
+  var h = loadHistory();
+  h.push({w:w, t:txt});
+  if(h.length > MAX_HISTORY) h = h.slice(h.length - MAX_HISTORY);
+  lsSet(HISTORY_KEY, JSON.stringify(h));
+}
+function restoreHistory(){
+  loadHistory().forEach(function(item){
+    if(item && item.t && (item.w === "user" || item.w === "bot")){
+      add(item.t, item.w);
     }
-
-  }catch(error){
-    loading.textContent =
-      "Kuch gadbad ho gayi: " + error.message;
-  }
-
-  chat.scrollTop = chat.scrollHeight;
-}
-
-/* =========================================================
-   SUGGESTED QUESTIONS
-========================================================= */
-document.querySelectorAll(".chip").forEach(chip=>{
-  chip.addEventListener("click",()=>{
-    input.value = chip.dataset.question;
-    openChat();
-    input.focus();
   });
-});
-
-/* =========================================================
-   SEND
-========================================================= */
-sendBtn.addEventListener("click",sendText);
-
-input.addEventListener("keydown",event=>{
-  if(event.key === "Enter"){
-    event.preventDefault();
-    sendText();
-  }
-});
-
-/* =========================================================
-   VOICE RECORDING
-========================================================= */
-let mediaRec = null;
-let chunks = [];
-let recording = false;
-
-function startRecording(event){
-  event.preventDefault();
-
-  if(recording) return;
-
-  if(event.pointerId !== undefined && mic.setPointerCapture){
-    try{
-      mic.setPointerCapture(event.pointerId);
-    }catch(e){}
-  }
-
-  navigator.mediaDevices.getUserMedia({audio:true})
-    .then(stream=>{
-
-      mediaRec = new MediaRecorder(stream);
-      chunks = [];
-
-      mediaRec.ondataavailable = event=>{
-        if(event.data && event.data.size > 0){
-          chunks.push(event.data);
-        }
-      };
-
-      mediaRec.onstop = ()=>{
-
-        recording = false;
-        mic.classList.remove("rec");
-
-        stream.getTracks().forEach(track=>track.stop());
-
-        const blob =
-          new Blob(chunks,{type:"audio/webm"});
-
-        if(blob.size > 0){
-          sendVoice(blob,"recording.webm");
-        }
-      };
-
-      mediaRec.start();
-      recording = true;
-      mic.classList.add("rec");
-
-    })
-    .catch(error=>{
-      alert(
-        "Mic access nahi mila: " +
-        error.name +
-        " - " +
-        error.message
-      );
-    });
 }
 
-function stopRecording(event){
-  if(event) event.preventDefault();
+/* server says the limit is reached: sync the local count and show the paywall */
+function handleLimitReached(typingBubble){
+  msgCount = FREE_LIMIT;
+  lsSet("krishna_msgcount", String(FREE_LIMIT));
+  if(typingBubble && typingBubble.parentNode && typingBubble.parentNode.parentNode){
+    typingBubble.parentNode.parentNode.removeChild(typingBubble.parentNode);
+  }
+  showPaywall();
+}
 
+async function sendText(){
+  var m=input.value.trim();
+  if(!m)return;
+  if(!canSendMessage())return;
+  add(m,"user");
+  saveHistory("user", m);
+  input.value="";
+  bumpCount();
+  var L=addTyping();
+  try{
+    var res=await fetch(WEBHOOK_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:m,sessionId:"mobile-user",lang:currentLang||"hi",deviceId:getDeviceId(),phone:lsGet("krishna_phone")||""})});
+    var data=await res.json();
+    if(data.limitReached){handleLimitReached(L);return;}
+    var reply=data.reply||t("noReply");
+    L.textContent=reply;
+    saveHistory("bot", reply);
+  }catch(e){
+    L.textContent=t("error")+e.message;
+  }
+  chat.scrollTop=chat.scrollHeight;
+}
+
+var mediaRec=null,chunks=[],recording=false;
+function startRecording(e){
+  e.preventDefault();
+  if(recording)return;
+  if(!canSendMessage())return;
+  if(e.pointerId!==undefined && mic.setPointerCapture){
+    try{mic.setPointerCapture(e.pointerId);}catch(err){}
+  }
+  navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
+    mediaRec=new MediaRecorder(stream);
+    chunks=[];
+    mediaRec.ondataavailable=function(ev){
+      if(ev.data && ev.data.size>0){chunks.push(ev.data);}
+    };
+    mediaRec.onstop=function(){
+      recording=false;
+      mic.classList.remove("rec");
+      stream.getTracks().forEach(function(tr){tr.stop();});
+      var finalBlob=new Blob(chunks,{type:"audio/webm"});
+      if(finalBlob.size>0){sendVoice(finalBlob,"recording.webm");}
+    };
+    mediaRec.start();
+    recording=true;
+    mic.classList.add("rec");
+  }).catch(function(e){
+    alert(t("micError")+e.name+" - "+e.message);
+  });
+}
+function stopRecording(e){
+  if(e)e.preventDefault();
   if(recording && mediaRec){
     mediaRec.stop();
   }
 }
-
+async function sendVoice(blob,filename){
+  var userBubble = add(t("listening"),"user");
+  bumpCount();
+  var L=addTyping();
+  try{
+    var fd=new FormData();
+    fd.append("data",blob,filename||"recording.webm");
+    fd.append("sessionId","mobile-user");
+    fd.append("lang",currentLang||"hi");
+    fd.append("deviceId",getDeviceId());
+    fd.append("phone",lsGet("krishna_phone")||"");
+    var res=await fetch(WEBHOOK_URL,{method:"POST",body:fd});
+    var data=await res.json();
+    if(data.limitReached){
+      if(userBubble.parentNode && userBubble.parentNode.parentNode){
+        userBubble.parentNode.parentNode.removeChild(userBubble.parentNode);
+      }
+      handleLimitReached(L);
+      return;
+    }
+    if(data.transcript){
+      userBubble.textContent = data.transcript;
+    } else {
+      userBubble.textContent = t("voiceFallback");
+    }
+    saveHistory("user", userBubble.textContent);
+    var reply=data.reply||t("noReply");
+    L.textContent=reply;
+    saveHistory("bot", reply);
+    if(data.audioBase64){addPlay(L,data.audioBase64);play(data.audioBase64);}
+  }catch(e){
+    userBubble.textContent = t("voiceFallback");
+    L.textContent=t("error")+e.message;
+  }
+  chat.scrollTop=chat.scrollHeight;
+}
+btn.addEventListener("click",sendText);
+input.addEventListener("keydown",function(e){if(e.key==="Enter")sendText();});
 mic.addEventListener("pointerdown",startRecording);
 mic.addEventListener("pointerup",stopRecording);
-mic.addEventListener("pointercancel",stopRecording);
 mic.addEventListener("pointerleave",stopRecording);
+mic.addEventListener("pointercancel",stopRecording);
 
-async function sendVoice(blob,filename){
+/* ---- three-dot menu ---- */
+var menuBtn=document.getElementById("menuBtn"), menuDropdown=document.getElementById("menuDropdown");
+menuBtn.addEventListener("click",function(e){
+  e.stopPropagation();
+  menuDropdown.classList.toggle("show");
+});
+document.addEventListener("click",function(){
+  menuDropdown.classList.remove("show");
+});
 
-  addMessage("🎙️ Aapka voice prashn","user");
-
-  const loading = addTyping();
-
-  try{
-
-    const formData = new FormData();
-
-    formData.append(
-      "data",
-      blob,
-      filename || "recording.webm"
-    );
-
-    formData.append(
-      "sessionId",
-      "mobile-user"
-    );
-
-    const response = await fetch(
-      WEBHOOK_URL,
-      {
-        method:"POST",
-        body:formData
-      }
-    );
-
-    const data = await response.json();
-
-    loading.textContent =
-      data.reply || "(no reply)";
-
-    if(data.audioBase64){
-      addPlayButton(loading,data.audioBase64);
-      playAudio(data.audioBase64);
-    }
-
-  }catch(error){
-
-    loading.textContent =
-      "Kuch gadbad ho gayi: " +
-      error.message;
-
+/* ---- language modal ---- */
+function setLanguage(lang){
+  currentLang = lang;
+  lsSet("krishna_lang", lang);
+  applyStaticText();
+  if(greetingBubble){
+    greetingBubble.textContent = t("greeting");
   }
+}
+document.querySelectorAll(".lang-choice").forEach(function(elm){
+  elm.addEventListener("click",function(){
+    var wasFirstLaunch = langModal.dataset.firstLaunch === "true";
+    setLanguage(elm.getAttribute("data-lang"));
+    langModal.classList.remove("show");
+    if(wasFirstLaunch){
+      langModal.dataset.firstLaunch = "false";
+      greetingBubble = add(t("greeting"),"bot");
+    }
+  });
+});
+document.getElementById("langCloseBtn").addEventListener("click",function(){
+  langModal.classList.remove("show");
+});
+document.getElementById("menuLangBtn").addEventListener("click",function(){
+  document.getElementById("langCloseBtn").style.display="block";
+  langModal.dataset.firstLaunch = "false";
+  langModal.classList.add("show");
+});
 
-  chat.scrollTop = chat.scrollHeight;
+/* ---- profile page ---- */
+document.getElementById("menuProfileBtn").addEventListener("click",function(){
+  window.location.href = "profile.html";
+});
+
+/* ---- startup: ask language on first launch ---- */
+if(!currentLang){
+  document.getElementById("langCloseBtn").style.display="none";
+  langModal.dataset.firstLaunch = "true";
+  var LANG_POPUP_DELAY = 3000; /* milliseconds: 3000 = 3 seconds, change as you like */
+  setTimeout(function(){
+    if(!currentLang){ langModal.classList.add("show"); }
+  }, LANG_POPUP_DELAY);
+} else {
+  applyStaticText();
+  greetingBubble = add(t("greeting"),"bot");
+  restoreHistory();
 }
 
-/* =========================================================
-   TOP BUTTONS
-========================================================= */
-document.getElementById("menuBtn").addEventListener("click",()=>{
-  alert(
-    "Shri Krishna Vani\n\n" +
-    "Har prashn ka uttar, Gita ke prakash mein."
-  );
-});
-
-document.getElementById("aboutBtn").addEventListener("click",()=>{
-  alert(
-    "Shri Krishna Vani\n\n" +
-    "Apne mann ki baat kahiye aur " +
-    "Gita ke gyaan se margdarshan paaiye."
-  );
-});
-
-/* =========================================================
-   OPTIONAL CONTRIBUTION MODAL
-   Your n8n response can call showLimitModal() if required.
-========================================================= */
-function showLimitModal(){
-  const modal =
-    document.getElementById("limitModal");
-
-  modal.classList.add("show");
+/* ---- if the free limit is already used up, show the paywall right away ---- */
+if(!isUnlocked() && msgCount >= FREE_LIMIT){
+  showPaywall();
 }
-
-document.getElementById("closeModal").addEventListener("click",()=>{
-  document.getElementById("limitModal")
-    .classList.remove("show");
-});
-
-document.getElementById("contributeBtn").addEventListener("click",()=>{
-  alert(
-    "Yahan aap apna contribution/payment page connect kar sakte hain."
-  );
-});
 </script>
 
-</body>
-</html>
+</body></html>
