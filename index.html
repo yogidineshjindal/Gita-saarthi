@@ -648,7 +648,7 @@ async function sendText(){
   bumpCount();
   var L=addTyping();
   try{
-    var res=await fetch(WEBHOOK_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:m,sessionId:"mobile-user",lang:currentLang||"hi",deviceId:getDeviceId(),phone:lsGet("krishna_phone")||""})});
+    var res=await fetch(WEBHOOK_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:m,sessionId:getDeviceId(),lang:currentLang||"hi",deviceId:getDeviceId(),phone:lsGet("krishna_phone")||""})});
     var data=await res.json();
     if(data.limitReached){handleLimitReached(L);return;}
     var reply=data.reply||t("noReply");
@@ -850,7 +850,7 @@ async function sendVoice(blob,filename){
   try{
     var fd=new FormData();
     fd.append("data",blob,filename||"recording.wav");
-    fd.append("sessionId","mobile-user");
+    fd.append("sessionId",getDeviceId());
     fd.append("lang",currentLang||"hi");
     fd.append("deviceId",getDeviceId());
     fd.append("phone",lsGet("krishna_phone")||"");
