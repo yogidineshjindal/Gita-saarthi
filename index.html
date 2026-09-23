@@ -128,6 +128,7 @@ body::after{
 #mic::before{border-color:rgba(74,90,99,0.3)}
 #mic.rec{background:linear-gradient(135deg,#d97a5f,#c05a3f);color:#fff;border-color:transparent;animation:pulse 1s infinite}
 #mic.rec::before{border-color:transparent}
+#mic.requesting{opacity:.55;animation:pulse 1.4s infinite}
 #send{
   border:1.5px solid var(--gold-deep);
   background:radial-gradient(circle at 35% 28%, var(--gold-light), var(--gold) 65%, var(--gold-deep));
@@ -561,6 +562,17 @@ function addTyping(){
 }
 function play(b64){var a=new Audio("data:audio/wav;base64,"+b64);a.play();}
 function addPlay(bubble,b64){var pb=document.createElement("button");pb.className="playbtn";pb.textContent=t("listenBtn");pb.onclick=function(){play(b64);};bubble.appendChild(document.createElement("br"));bubble.appendChild(pb);}
+function addPlayLocal(bubble,blob){
+  // Lets the user hear the exact audio that was captured & sent, so a bad
+  // capture (mic issue) can be told apart from a bad transcript (backend/STT issue).
+  var url=URL.createObjectURL(blob);
+  var pb=document.createElement("button");
+  pb.className="playbtn";
+  pb.textContent=t("listenBtn");
+  pb.onclick=function(){ new Audio(url).play(); };
+  bubble.appendChild(document.createElement("br"));
+  bubble.appendChild(pb);
+}
 
 var FREE_LIMIT = 3;
 var msgCount = 0;
@@ -648,7 +660,63 @@ async function sendText(){
   chat.scrollTop=chat.scrollHeight;
 }
 
-var mediaRec=null,chunks=[],recording=false,micPressing=false;
+var mediaRec=null,chunks=[],recording=false,micPressing=false,micStream=null,requestingMic=false;
+
+function beginRecording(){
+  if(!micStream)return;
+  var options={};
+  if(typeof MediaRecorder!="undefined" && MediaRecorder.isTypeSupported){
+    if(MediaRecorder.isTypeSupported("audio/webm;codecs=opus")) options.mimeType="audio/webm;codecs=opus";
+    else if(MediaRecorder.isTypeSupported("audio/webm")) options.mimeType="audio/webm";
+    else if(MediaRecorder.isTypeSupported("audio/mp4")) options.mimeType="audio/mp4";
+  }
+  try{ mediaRec = Object.keys(options).length ? new MediaRecorder(micStream,options) : new MediaRecorder(micStream); }
+  catch(err){
+    micPressing=false;
+    alert(t("micError")+"Unable to start audio recording: "+err.message);
+    return;
+  }
+
+  chunks=[];
+  mediaRec.ondataavailable=function(ev){
+    if(ev.data && ev.data.size>0)chunks.push(ev.data);
+  };
+  mediaRec.onstop=async function(){
+    recording=false;
+    mic.classList.remove("rec");
+    var recorder=mediaRec;
+    mediaRec=null;
+    // micStream is intentionally kept alive (not stopped) so the NEXT
+    // press-and-hold starts instantly instead of re-asking for the mic.
+
+    try{
+      var recordedType=(recorder && recorder.mimeType) || "audio/webm";
+      var recordedBlob=new Blob(chunks,{type:recordedType});
+      chunks=[];
+      if(!recordedBlob.size)return;
+
+      var wavBlob=await convertBlobToWav(recordedBlob);
+      if(wavBlob && wavBlob.size>44){
+        await sendVoice(wavBlob,"recording.wav");
+      }else{
+        throw new Error("The WAV conversion produced an empty audio file.");
+      }
+    }catch(err){
+      console.error("WAV conversion/upload error:",err);
+      alert(t("micError")+"Could not convert the recording to WAV: "+err.message);
+    }
+  };
+
+  mediaRec.start();
+  recording=true;
+  mic.classList.add("rec");
+  if(!micPressing){
+    // finger was already lifted by the time the recorder actually started
+    // (can happen right after granting permission) - stop immediately.
+    stopRecording();
+  }
+}
+
 function startRecording(e){
   if(e && e.preventDefault)e.preventDefault();
   if(recording || micPressing)return;
@@ -663,62 +731,32 @@ function startRecording(e){
     alert(t("micError")+"Microphone recording is not supported in this browser.");
     return;
   }
-  navigator.mediaDevices.getUserMedia({audio:{channelCount:1,echoCancellation:true,noiseSuppression:true,autoGainControl:true}}).then(function(stream){
-    if(!micPressing){
-      stream.getTracks().forEach(function(tr){tr.stop();});
-      return;
+
+  if(micStream){
+    // Already have mic access from an earlier press - starts right away,
+    // no permission wait at all.
+    beginRecording();
+    return;
+  }
+
+  // First-ever press: this is the only time the permission prompt appears.
+  requestingMic=true;
+  mic.classList.add("requesting");
+  navigator.mediaDevices.getUserMedia({audio:{channelCount:1,sampleRate:{ideal:48000},echoCancellation:true,noiseSuppression:true,autoGainControl:true}}).then(function(stream){
+    micStream=stream;
+    requestingMic=false;
+    mic.classList.remove("requesting");
+    if(micPressing){
+      beginRecording();
     }
-
-    var options={};
-    if(typeof MediaRecorder!="undefined" && MediaRecorder.isTypeSupported){
-      if(MediaRecorder.isTypeSupported("audio/webm;codecs=opus")) options.mimeType="audio/webm;codecs=opus";
-      else if(MediaRecorder.isTypeSupported("audio/webm")) options.mimeType="audio/webm";
-      else if(MediaRecorder.isTypeSupported("audio/mp4")) options.mimeType="audio/mp4";
-    }
-    try{ mediaRec = Object.keys(options).length ? new MediaRecorder(stream,options) : new MediaRecorder(stream); }
-    catch(err){
-      stream.getTracks().forEach(function(tr){tr.stop();});
-      micPressing=false;
-      alert(t("micError")+"Unable to start audio recording: "+err.message);
-      return;
-    }
-
-    chunks=[];
-    mediaRec.ondataavailable=function(ev){
-      if(ev.data && ev.data.size>0)chunks.push(ev.data);
-    };
-    mediaRec.onstop=async function(){
-      recording=false;
-      var recorder=mediaRec;
-      mediaRec=null;
-      mic.classList.remove("rec");
-      stream.getTracks().forEach(function(tr){tr.stop();});
-
-      try{
-        var recordedType=(recorder && recorder.mimeType) || "audio/webm";
-        var recordedBlob=new Blob(chunks,{type:recordedType});
-        chunks=[];
-        if(!recordedBlob.size)return;
-
-        var wavBlob=await convertBlobToWav(recordedBlob);
-        if(wavBlob && wavBlob.size>44){
-          await sendVoice(wavBlob,"recording.wav");
-        }else{
-          throw new Error("The WAV conversion produced an empty audio file.");
-        }
-      }catch(err){
-        console.error("WAV conversion/upload error:",err);
-        alert(t("micError")+"Could not convert the recording to WAV: "+err.message);
-      }
-    };
-
-    mediaRec.start();
-    recording=true;
-    mic.classList.add("rec");
-    if(!micPressing)stopRecording();
+    // else: user already lifted their finger while the OS permission dialog
+    // was open. Nothing was recorded this time, but the mic is now warmed
+    // up, so their very next press-and-hold will start instantly.
   }).catch(function(err){
+    requestingMic=false;
     micPressing=false;
     recording=false;
+    mic.classList.remove("requesting");
     mic.classList.remove("rec");
     alert(t("micError")+err.name+" - "+err.message);
   });
@@ -836,12 +874,14 @@ async function sendVoice(blob,filename){
       userBubble.textContent=t("voiceFallback");
     }
     saveHistory("user",userBubble.textContent);
+    addPlayLocal(userBubble,blob);
     var reply=data.reply||t("noReply");
     L.textContent=reply;
     saveHistory("bot",reply);
     if(data.audioBase64){addPlay(L,data.audioBase64);play(data.audioBase64);}
   }catch(e){
     userBubble.textContent=t("voiceFallback");
+    addPlayLocal(userBubble,blob);
     L.textContent=t("error")+e.message;
   }
   chat.scrollTop=chat.scrollHeight;
