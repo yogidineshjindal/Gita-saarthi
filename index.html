@@ -92,7 +92,7 @@ body::after{
 .row{display:flex;align-items:flex-end;gap:8px;animation:pop .5s cubic-bezier(.16,.8,.32,1) both}
 .row.user{flex-direction:row-reverse}
 .av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;border:1px solid rgba(184,146,60,0.4)}
-.av.bot{background:linear-gradient(135deg,#EDE0C2,#D8B35F);color:var(--gold-deep)}
+.av.bot{background-image:url("icon-192.png");background-size:cover;background-position:center}
 .av.user{background:linear-gradient(135deg,#e7ecee,#cfd8db);color:var(--slate-deep)}
 .bubble{
   max-width:78%;padding:12px 15px;border-radius:16px;line-height:1.65;font-size:15px;
@@ -426,7 +426,7 @@ body.chatting #chat{display:flex;flex:1;min-height:0}
 <script>
 var WEBHOOK_URL = "https://ishikagarg.app.n8n.cloud/webhook/gita-voice";
 var chat=document.getElementById("chat"),input=document.getElementById("msg"),btn=document.getElementById("send"),mic=document.getElementById("mic");
-var LOTUS=String.fromCodePoint(129719),PRAY=String.fromCodePoint(128591);
+var PRAY=String.fromCodePoint(128591);
 
 (function initDust(){
   var wrap = document.getElementById("dust");
@@ -577,10 +577,10 @@ document.querySelectorAll(".topic-card").forEach(function(card){
   });
 });
 
-function add(txt,w){var row=document.createElement("div");row.className="row "+w;var av=document.createElement("div");av.className="av "+w;av.textContent=(w==="bot"?LOTUS:PRAY);var b=document.createElement("div");b.className="bubble";b.textContent=txt;row.appendChild(av);row.appendChild(b);chat.appendChild(row);chat.scrollTop=chat.scrollHeight;return b;}
+function add(txt,w){var row=document.createElement("div");row.className="row "+w;var av=document.createElement("div");av.className="av "+w;if(w==="user"){av.textContent=PRAY;}var b=document.createElement("div");b.className="bubble";b.textContent=txt;row.appendChild(av);row.appendChild(b);chat.appendChild(row);chat.scrollTop=chat.scrollHeight;return b;}
 function addTyping(){
   var row=document.createElement("div");row.className="row bot";
-  var av=document.createElement("div");av.className="av bot";av.textContent=LOTUS;
+  var av=document.createElement("div");av.className="av bot";
   var b=document.createElement("div");b.className="bubble";
   var wf=document.createElement("span");wf.className="waveform";
   for(var i=0;i<5;i++){wf.appendChild(document.createElement("i"));}
@@ -977,7 +977,7 @@ if(!isUnlocked() && msgCount >= FREE_LIMIT){
 
 <style>
 #installBanner{
-  position:fixed;left:12px;right:12px;bottom:12px;z-index:999;
+  position:fixed;left:12px;right:12px;top:calc(64px + env(safe-area-inset-top));z-index:40;
   display:none;align-items:center;gap:12px;
   background:#fdfaf2;
   border:1px solid rgba(184,146,60,0.4);
