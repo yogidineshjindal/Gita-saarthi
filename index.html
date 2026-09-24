@@ -3,6 +3,33 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>श्री कृष्ण वाणी</title>
+
+<meta name="description" content="श्री कृष्ण से अपने मन की बात कहिए। आध्यात्मिक संवाद, जीवन मार्गदर्शन और मन की शांति।">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="श्री कृष्ण वाणी">
+<meta property="og:title" content="श्री कृष्ण वाणी">
+<meta property="og:description" content="श्री कृष्ण से अपने मन की बात कहिए... आध्यात्मिक संवाद | जीवन मार्गदर्शन | मन की शांति">
+<meta property="og:image" content="og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="./">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="श्री कृष्ण वाणी">
+<meta name="twitter:description" content="श्री कृष्ण से अपने मन की बात कहिए...">
+<meta name="twitter:image" content="og-image.png">
+
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="manifest" href="manifest.json">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="श्री कृष्ण वाणी">
+<meta name="theme-color" content="#B8923C">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Tiro+Devanagari+Hindi&family=Cormorant+Garamond:wght@500;600&display=swap" rel="stylesheet">
 <style>
@@ -946,6 +973,111 @@ if(!currentLang){
 if(!isUnlocked() && msgCount >= FREE_LIMIT){
   showPaywall();
 }
+</script>
+
+<style>
+#installBanner{
+  position:fixed;left:12px;right:12px;bottom:12px;z-index:999;
+  display:none;align-items:center;gap:12px;
+  background:#fdfaf2;
+  border:1px solid rgba(184,146,60,0.4);
+  border-radius:16px;padding:12px 14px;
+  box-shadow:0 14px 34px rgba(44,52,56,0.28);
+  font-family:'Poppins',sans-serif;
+}
+#installBanner.show{display:flex}
+#installBanner img{width:44px;height:44px;border-radius:12px;flex-shrink:0}
+#installBanner .ib-text{flex:1;min-width:0}
+#installBanner .ib-title{font-size:14px;font-weight:600;color:#2E3B42;margin:0}
+#installBanner .ib-sub{font-size:12px;color:#66757C;margin:2px 0 0}
+#installBanner button{
+  border:none;border-radius:10px;padding:9px 14px;font-size:13px;font-weight:600;
+  font-family:inherit;cursor:pointer;flex-shrink:0;
+}
+#installBanner .ib-install{
+  background:linear-gradient(180deg,#D8B35F,#B8923C 60%,#8A6A26);
+  color:#3a2c0c;
+}
+#installBanner .ib-close{
+  background:transparent;color:#66757C;padding:6px;font-size:18px;line-height:1;
+}
+</style>
+
+<div id="installBanner">
+  <img src="icon-192.png" alt="श्री कृष्ण वाणी">
+  <div class="ib-text">
+    <p class="ib-title">श्री कृष्ण वाणी</p>
+    <p class="ib-sub" id="ibSub">होम स्क्रीन पर जोड़ें, ऐप की तरह खोलें</p>
+  </div>
+  <button class="ib-install" id="ibInstallBtn">जोड़ें</button>
+  <button class="ib-close" id="ibCloseBtn">&times;</button>
+</div>
+
+<script>
+(function(){
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('sw.js').catch(function(err){
+      console.warn('SW registration failed:', err);
+    });
+  }
+
+  var banner = document.getElementById('installBanner');
+  var installBtn = document.getElementById('ibInstallBtn');
+  var closeBtn = document.getElementById('ibCloseBtn');
+  var sub = document.getElementById('ibSub');
+  var deferredPrompt = null;
+
+  function isStandalone(){
+    return window.matchMedia('(display-mode: standalone)').matches
+      || window.navigator.standalone === true;
+  }
+  function isIOS(){
+    return /iphone|ipad|ipod/i.test(navigator.userAgent);
+  }
+  function isInAppBrowser(){
+    var ua = navigator.userAgent || '';
+    return /FBAN|FBAV|Instagram|WhatsApp|Line\//i.test(ua);
+  }
+  function dismissedRecently(){
+    var d = localStorage.getItem('krishna_install_dismissed');
+    return d && (Date.now() - parseInt(d,10)) < 1000*60*60*24*7;
+  }
+
+  if(isStandalone() || dismissedRecently()){
+    // already installed, or user closed it recently
+  } else if(isInAppBrowser()){
+    sub.textContent = 'कृपया ऊपर मेन्यू से "Open in Browser" चुनें, फिर होम स्क्रीन पर जोड़ें';
+    installBtn.style.display = 'none';
+    setTimeout(function(){ banner.classList.add('show'); }, 1200);
+  } else if(isIOS()){
+    sub.textContent = 'नीचे शेयर बटन दबाएँ → "Add to Home Screen" चुनें';
+    installBtn.style.display = 'none';
+    setTimeout(function(){ banner.classList.add('show'); }, 1200);
+  } else {
+    window.addEventListener('beforeinstallprompt', function(e){
+      e.preventDefault();
+      deferredPrompt = e;
+      banner.classList.add('show');
+    });
+  }
+
+  installBtn.addEventListener('click', function(){
+    if(deferredPrompt){
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.finally(function(){
+        deferredPrompt = null;
+        banner.classList.remove('show');
+      });
+    } else {
+      banner.classList.remove('show');
+    }
+  });
+
+  closeBtn.addEventListener('click', function(){
+    banner.classList.remove('show');
+    localStorage.setItem('krishna_install_dismissed', String(Date.now()));
+  });
+})();
 </script>
 
 </body></html>
