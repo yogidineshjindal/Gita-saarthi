@@ -483,6 +483,8 @@ var TXT = {
     installSubInApp:"कृपया ऊपर मेन्यू से \"Open in Browser\" चुनें, फिर होम स्क्रीन पर जोड़ें",
     installSubManual:"कृपया ब्राउज़र के ⋮ मेन्यू में जाकर \"Install app\" या \"Add to Home screen\" चुनें",
     installAlready:"ऐप पहले से इंस्टॉल है।",
+    installSubConsumed:"इंस्टॉल विकल्प फिर से लाने के लिए रीलोड करें",
+    installReload:"रीलोड करें",
     langTitle:"अपनी भाषा चुनें / Choose your language",
     langClose:"बंद करें / Close",
     profileTitle:"प्रोफ़ाइल",
@@ -524,6 +526,8 @@ var TXT = {
     installSubInApp:"Please choose \"Open in Browser\" from the menu above, then add to home screen",
     installSubManual:"Please open your browser's ⋮ menu and choose \"Install app\" or \"Add to Home screen\"",
     installAlready:"The app is already installed.",
+    installSubConsumed:"Reload to bring the install option back",
+    installReload:"Reload",
     langTitle:"अपनी भाषा चुनें / Choose your language",
     langClose:"बंद करें / Close",
     profileTitle:"Profile",
@@ -1066,6 +1070,18 @@ if(!isUnlocked() && msgCount >= FREE_LIMIT){
   var titleEl = document.getElementById('ibTitle');
   var sub = document.getElementById('ibSub');
   var deferredPrompt = null;
+  // Once deferredPrompt.prompt() has been called, that exact prompt object
+  // can never be shown again (this is a hard browser limitation, not
+  // something we can work around). This flag remembers that we're in that
+  // "spent" state so the button can offer a reload instead of dead-end text.
+  var promptConsumed = false;
+
+  function isInstalledAlready(){
+    return isStandalone() || localStorage.getItem('krishna_app_installed') === '1';
+  }
+  window.addEventListener('appinstalled', function(){
+    try{ localStorage.setItem('krishna_app_installed', '1'); }catch(e){}
+  });
 
   function tr(key){
     // Reuses the app's own translation table (t()) when available so the
@@ -1110,9 +1126,20 @@ if(!isUnlocked() && msgCount >= FREE_LIMIT){
       sub.textContent = tr('installSubDefault');
       installBtn.textContent = tr('installBtnText');
       installBtn.style.display = '';
+    } else if(promptConsumed){
+      // The one-time native prompt was already used this page-load.
+      // Chrome will never re-issue that same prompt object, so offer a
+      // reload (which fetches a brand new prompt) instead of a dead end.
+      sub.textContent = tr('installSubConsumed');
+      installBtn.textContent = tr('installReload');
+      installBtn.style.display = '';
     } else {
-      sub.textContent = tr('installSubManual');
-      installBtn.style.display = 'none';
+      // Desktop / Android Chrome-type browsers, prompt not captured yet:
+      // still show the जोड़ें/Install button. Clicking it will fall back
+      // to manual instructions if the native prompt truly never arrives.
+      sub.textContent = tr('installSubDefault');
+      installBtn.textContent = tr('installBtnText');
+      installBtn.style.display = '';
     }
   }
   window.krishnaRefreshInstallText = refreshInstallText;
@@ -1138,11 +1165,20 @@ if(!isUnlocked() && msgCount >= FREE_LIMIT){
 
   installBtn.addEventListener('click', function(){
     if(deferredPrompt){
-      deferredPrompt.prompt();
-      deferredPrompt.userChoice.finally(function(){
-        deferredPrompt = null;
+      var thisPrompt = deferredPrompt;
+      deferredPrompt = null;
+      thisPrompt.prompt();
+      thisPrompt.userChoice.then(function(choice){
+        if(choice && choice.outcome === 'accepted'){
+          try{ localStorage.setItem('krishna_app_installed', '1'); }catch(e){}
+        }
+      }).finally(function(){
+        promptConsumed = true;
         hideBanner();
       });
+    } else if(promptConsumed){
+      // Reload to ask Chrome for a brand new install prompt.
+      window.location.reload();
     } else {
       sub.textContent = tr('installSubManual');
       installBtn.style.display = 'none';
@@ -1156,7 +1192,7 @@ if(!isUnlocked() && msgCount >= FREE_LIMIT){
   // --- Manual re-trigger: reachable any time later from
   // Menu → सहायता/Support → "ऐप इंस्टॉल करें / Install App" ---
   window.krishnaShowInstallPrompt = function(){
-    if(isStandalone()){
+    if(isInstalledAlready()){
       alert(tr('installAlready'));
       return;
     }
