@@ -341,6 +341,7 @@ body.chatting #chat{display:flex;flex:1;min-height:0}
     <div class="account-dropdown" id="menuDropdown">
       <button class="account-item" id="menuProfileBtn">प्रोफ़ाइल</button>
       <button class="account-item" id="menuLangBtn">भाषा / Language</button>
+      <button class="account-item" id="menuSupportBtn">सहायता / Support</button>
     </div>
   </div>
 </div>
@@ -472,6 +473,7 @@ var TXT = {
     paywallBtn:"दक्षिणा दें",
     menuProfile:"प्रोफ़ाइल",
     menuLang:"भाषा / Language",
+    menuSupport:"सहायता / Support",
     langTitle:"अपनी भाषा चुनें / Choose your language",
     langClose:"बंद करें / Close",
     profileTitle:"प्रोफ़ाइल",
@@ -504,6 +506,7 @@ var TXT = {
     paywallBtn:"Contribute",
     menuProfile:"Profile",
     menuLang:"भाषा / Language",
+    menuSupport:"सहायता / Support",
     langTitle:"अपनी भाषा चुनें / Choose your language",
     langClose:"बंद करें / Close",
     profileTitle:"Profile",
@@ -539,6 +542,7 @@ function applyStaticText(){
   document.getElementById("paywallBtn").textContent = t("paywallBtn");
   document.getElementById("menuProfileBtn").textContent = t("menuProfile");
   document.getElementById("menuLangBtn").textContent = t("menuLang");
+  document.getElementById("menuSupportBtn").textContent = t("menuSupport");
   document.getElementById("langTitle").textContent = t("langTitle");
   document.getElementById("langCloseBtn").textContent = t("langClose");
   document.getElementById("heroTagline").textContent = t("heroTagline");
@@ -960,6 +964,10 @@ document.getElementById("menuLangBtn").addEventListener("click",function(){
 
 document.getElementById("menuProfileBtn").addEventListener("click",function(){
   window.location.href = "profile.html";
+});
+
+document.getElementById("menuSupportBtn").addEventListener("click",function(){
+  window.location.href = "support.html";
 });
 
 if(!currentLang){
