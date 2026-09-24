@@ -1081,7 +1081,8 @@ if(!isUnlocked() && msgCount >= FREE_LIMIT){
         banner.classList.remove('show');
       });
     } else {
-      banner.classList.remove('show');
+      sub.textContent = 'कृपया ब्राउज़र के ⋮ मेन्यू में जाकर "Install app" या "Add to Home screen" चुनें';
+      installBtn.style.display = 'none';
     }
   });
 
