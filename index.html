@@ -1157,8 +1157,23 @@ if(!isUnlocked() && msgCount >= FREE_LIMIT){
   window.addEventListener('beforeinstallprompt', function(e){
     e.preventDefault();
     deferredPrompt = e;
+    console.log('[install-debug] beforeinstallprompt FIRED - native install is available');
     if(banner.classList.contains('show')) refreshInstallText();
   });
+
+  // Diagnostic only: if this event never fires within a few seconds of
+  // load, the browser has decided the PWA isn't installable yet (bad
+  // manifest/icons/service worker, not served over https, already
+  // installed, or a browser that doesn't support this API at all).
+  // Check DevTools > Application > Manifest for the exact reason.
+  setTimeout(function(){
+    if(!deferredPrompt){
+      console.warn('[install-debug] beforeinstallprompt NEVER fired within 4s of load. ' +
+        'isStandalone=' + isStandalone() + ' isIOS=' + isIOS() + ' isInAppBrowser=' + isInAppBrowser() +
+        '. If none of those are true and this is Chrome/Edge/Samsung Internet on Android or desktop, ' +
+        'check DevTools > Application > Manifest for installability errors.');
+    }
+  }, 4000);
 
   // No automatic popup at all. The banner only ever appears when the
   // user explicitly opens it from Menu → "ऐप इंस्टॉल करें / Install App".
