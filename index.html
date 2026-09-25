@@ -1152,6 +1152,20 @@ if(!isUnlocked() && msgCount >= FREE_LIMIT){
     banner.classList.remove('show');
   }
 
+  // Remember if the user already dismissed the auto-popup, so it doesn't
+  // nag on every reload. They can still install any time via the menu.
+  var DISMISS_KEY = 'krishna_install_dismissed';
+  function isDismissed(){
+    try{ return localStorage.getItem(DISMISS_KEY) === '1'; }catch(e){ return false; }
+  }
+  function markDismissed(){
+    try{ localStorage.setItem(DISMISS_KEY, '1'); }catch(e){}
+  }
+  function maybeAutoShow(){
+    if(isInstalledAlready() || isDismissed()) return;
+    showBanner();
+  }
+
   // Always listen for the native install event so a deferred prompt is
   // ready whenever the user opens the install option from the menu.
   window.addEventListener('beforeinstallprompt', function(e){
@@ -1159,6 +1173,7 @@ if(!isUnlocked() && msgCount >= FREE_LIMIT){
     deferredPrompt = e;
     console.log('[install-debug] beforeinstallprompt FIRED - native install is available');
     if(banner.classList.contains('show')) refreshInstallText();
+    maybeAutoShow();
   });
 
   // Diagnostic only: if this event never fires within a few seconds of
@@ -1172,11 +1187,15 @@ if(!isUnlocked() && msgCount >= FREE_LIMIT){
         'isStandalone=' + isStandalone() + ' isIOS=' + isIOS() + ' isInAppBrowser=' + isInAppBrowser() +
         '. If none of those are true and this is Chrome/Edge/Samsung Internet on Android or desktop, ' +
         'check DevTools > Application > Manifest for installability errors.');
+      // No native install prompt showed up (iOS Safari, in-app browsers,
+      // desktop Firefox/Safari, a page opened over file:// or plain http,
+      // or a manifest issue). Auto-show the banner anyway with manual
+      // "Add to Home Screen" instructions so an install option is always
+      // visible somewhere rather than silently never appearing.
+      maybeAutoShow();
     }
   }, 4000);
 
-  // No automatic popup at all. The banner only ever appears when the
-  // user explicitly opens it from Menu → "ऐप इंस्टॉल करें / Install App".
 
   installBtn.addEventListener('click', function(){
     if(deferredPrompt){
@@ -1202,6 +1221,7 @@ if(!isUnlocked() && msgCount >= FREE_LIMIT){
 
   closeBtn.addEventListener('click', function(){
     hideBanner();
+    markDismissed();
   });
 
   // --- Manual re-trigger: reachable any time later from
