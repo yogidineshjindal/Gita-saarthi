@@ -151,6 +151,26 @@ body::after{
   content:"";position:absolute;inset:-4px;border-radius:50%;border:1px solid;opacity:.35;pointer-events:none;
 }
 #mic svg,#send svg{width:19px;height:19px;position:relative;z-index:1}
+#micHint{
+  position:fixed;
+  left:50%;
+  bottom:78px;
+  transform:translateX(-50%) translateY(6px);
+  background:rgba(46,59,66,0.92);
+  color:#fff;
+  font-size:13px;
+  padding:8px 14px;
+  border-radius:10px;
+  white-space:nowrap;
+  z-index:60;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .2s ease, transform .2s ease;
+}
+#micHint.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
 #mic{
   border:1.5px solid var(--slate);background:radial-gradient(circle at 35% 30%, #eef2f2, rgba(74,90,99,0.1));
   color:var(--slate-deep);touch-action:none;user-select:none;-webkit-user-select:none;
@@ -373,6 +393,7 @@ body.chatting #chat{display:flex;flex:1;min-height:0}
 <input id="msg" autocomplete="off">
 <button id="send" title="भेजें"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.4 20.4l17.45-7.48a1 1 0 0 0 0-1.84L3.4 3.6a1 1 0 0 0-1.4.92V9.6a1 1 0 0 0 .78.98L14 12 2.78 13.42a1 1 0 0 0-.78.98v5.08a1 1 0 0 0 1.4.92z"/></svg></button>
 </div>
+<div id="micHint"></div>
 
 <div class="modal-overlay" id="subModal">
   <div class="modal-card">
@@ -720,6 +741,57 @@ async function sendText(){
 }
 
 var mediaRec=null,chunks=[],recording=false,micPressing=false,micStream=null,requestingMic=false;
+var pressStartTime=0;
+var MIN_HOLD_MS=350;             // release before this = "tapped", not "held"
+var MIN_AUDIO_SECONDS=0.4;       // recordings shorter than this are discarded
+var SILENCE_RMS_THRESHOLD=0.008; // near-silent audio is discarded
+
+var micHintEl=document.getElementById("micHint");
+var micHintTimer=null;
+function showMicHint(text){
+  if(!micHintEl)return;
+  micHintEl.textContent=text;
+  micHintEl.classList.add("show");
+  clearTimeout(micHintTimer);
+  micHintTimer=setTimeout(function(){
+    micHintEl.classList.remove("show");
+  },1800);
+}
+function micHintPressHold(){
+  showMicHint((currentLang==="en") ? "Press and hold to speak" : "दबाकर रखें और बोलें");
+}
+function micHintNoVoice(){
+  showMicHint((currentLang==="en") ? "No voice detected, try again" : "आवाज़ नहीं मिली, फिर कोशिश करें");
+}
+
+// Decides whether a decoded WAV clip actually contains audible speech,
+// so silent / accidental / too-short captures never get sent to the backend.
+async function analyzeWav(wavBlob){
+  try{
+    var buf = await wavBlob.arrayBuffer();
+    var view = new DataView(buf);
+    var dataSize = view.getUint32(40, true);
+    var sampleRate = view.getUint32(24, true);
+    var durationSec = (dataSize/2) / sampleRate; // 16-bit mono PCM
+    if(durationSec < MIN_AUDIO_SECONDS) return {hasVoice:false};
+
+    var offset = 44;
+    var sampleCount = dataSize/2;
+    var sumSquares = 0;
+    var step = Math.max(1, Math.floor(sampleCount/20000)); // sample-check for speed on long clips
+    var counted = 0;
+    for(var i=0; i<sampleCount; i+=step){
+      var s = view.getInt16(offset + i*2, true) / 32768;
+      sumSquares += s*s;
+      counted++;
+    }
+    var rms = Math.sqrt(sumSquares/Math.max(1,counted));
+    return {hasVoice: rms >= SILENCE_RMS_THRESHOLD};
+  }catch(e){
+    // If analysis fails for any reason, don't block sending - fail open.
+    return {hasVoice:true};
+  }
+}
 
 function beginRecording(){
   if(!micStream)return;
@@ -743,23 +815,45 @@ function beginRecording(){
   mediaRec.onstop=async function(){
     recording=false;
     mic.classList.remove("rec");
+
+    var heldMs = Date.now()-pressStartTime;
     var recorder=mediaRec;
     mediaRec=null;
     // micStream is intentionally kept alive (not stopped) so the NEXT
     // press-and-hold starts instantly instead of re-asking for the mic.
 
+    // Tapped instead of held: discard whatever (if anything) got captured,
+    // and tell the user to press-and-hold instead.
+    if(heldMs < MIN_HOLD_MS){
+      chunks=[];
+      micHintPressHold();
+      return;
+    }
+
     try{
       var recordedType=(recorder && recorder.mimeType) || "audio/webm";
       var recordedBlob=new Blob(chunks,{type:recordedType});
       chunks=[];
-      if(!recordedBlob.size)return;
+      if(!recordedBlob.size){
+        micHintNoVoice();
+        return;
+      }
 
       var wavBlob=await convertBlobToWav(recordedBlob);
-      if(wavBlob && wavBlob.size>44){
-        await sendVoice(wavBlob,"recording.wav");
-      }else{
-        throw new Error("The WAV conversion produced an empty audio file.");
+      if(!wavBlob || wavBlob.size<=44){
+        micHintNoVoice();
+        return;
       }
+
+      var check=await analyzeWav(wavBlob);
+      if(!check.hasVoice){
+        // Silent / too-short recording - never forwarded to the backend,
+        // so we don't get random/garbage transcripts back.
+        micHintNoVoice();
+        return;
+      }
+
+      await sendVoice(wavBlob,"recording.wav");
     }catch(err){
       console.error("WAV conversion/upload error:",err);
       alert(t("micError")+"Could not convert the recording to WAV: "+err.message);
@@ -781,6 +875,7 @@ function startRecording(e){
   if(recording || micPressing)return;
   if(!canSendMessage())return;
   micPressing=true;
+  pressStartTime=Date.now();
   startChatMode();
   if(e && e.pointerId!==undefined && mic.setPointerCapture){
     try{mic.setPointerCapture(e.pointerId);}catch(err){}
@@ -823,7 +918,15 @@ function startRecording(e){
 
 function stopRecording(e){
   if(e && e.preventDefault)e.preventDefault();
+  var wasWaitingOrIdle = micPressing && !recording;
   micPressing=false;
+
+  // Released before the recorder even started (still waiting on
+  // getUserMedia permission, or MediaRecorder hasn't fired "start" yet).
+  if(wasWaitingOrIdle && (Date.now()-pressStartTime) < MIN_HOLD_MS){
+    micHintPressHold();
+  }
+
   if(recording && mediaRec){
     try{mediaRec.stop();}catch(err){console.warn("Recorder stop:",err);}
   }
