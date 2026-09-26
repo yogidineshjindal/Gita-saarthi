@@ -363,6 +363,7 @@ body.chatting #chat{display:flex;flex:1;min-height:0}
     <div class="topic-card" data-hi="आध्यात्मिक विकास कैसे करूँ, कृपया मार्गदर्शन दीजिए।" data-en="How do I grow spiritually?"><span class="emoji">🪷</span><span data-t-hi="आध्यात्मिक विकास" data-t-en="Spiritual Growth">आध्यात्मिक विकास</span></div>
   </div>
 
+  <div class="hero-quote" id="heroQuote">"मन ही सब कुछ है। जो हम सोचते हैं, वही बन जाते हैं।"<b>— भगवद गीता</b></div>
 </div>
 
 <div id="chat"></div>
@@ -570,6 +571,12 @@ function applyStaticText(){
   document.getElementById("langTitle").textContent = t("langTitle");
   document.getElementById("langCloseBtn").textContent = t("langClose");
   document.getElementById("topicsLabel").textContent = t("topicsLabel");
+  var q = document.getElementById("heroQuote");
+  q.innerHTML = "";
+  q.appendChild(document.createTextNode(t("heroQuote")));
+  var b = document.createElement("b");
+  b.textContent = t("heroQuoteSrc");
+  q.appendChild(b);
   var lang = currentLang || "hi";
   document.querySelectorAll(".topic-card span[data-t-hi]").forEach(function(s){
     s.textContent = lang === "en" ? s.getAttribute("data-t-en") : s.getAttribute("data-t-hi");
