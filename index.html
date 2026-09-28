@@ -668,6 +668,9 @@ function lockProcessing(){
   btn.style.pointerEvents = "none";
   mic.style.opacity = "0.45";
   mic.style.pointerEvents = "none";
+  input.disabled = true;
+  input.style.opacity = "0.5";
+  document.querySelectorAll(".topic-card").forEach(function(c){ c.style.pointerEvents = "none"; c.style.opacity = "0.5"; });
 }
 function unlockProcessing(){
   isProcessing = false;
@@ -675,6 +678,9 @@ function unlockProcessing(){
   btn.style.pointerEvents = "";
   mic.style.opacity = "";
   mic.style.pointerEvents = "";
+  input.disabled = false;
+  input.style.opacity = "";
+  document.querySelectorAll(".topic-card").forEach(function(c){ c.style.pointerEvents = ""; c.style.opacity = ""; });
 }
 function canSendMessage(){
   if(isProcessing){
