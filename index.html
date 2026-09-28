@@ -117,6 +117,13 @@ body::after{
 .waveform i:nth-child(4){height:16px;animation-delay:.36s}
 .waveform i:nth-child(5){height:7px;animation-delay:.48s}
 @keyframes wave{0%,100%{transform:scaleY(.4);opacity:.55}50%{transform:scaleY(1);opacity:1}}
+.del-btn{
+  background:rgba(255,255,255,0.7);border:1px solid rgba(184,146,60,0.3);border-radius:50%;
+  width:28px;height:28px;flex-shrink:0;align-self:center;cursor:pointer;
+  font-size:13px;line-height:1;padding:0;opacity:.6;
+  display:flex;align-items:center;justify-content:center;
+}
+.del-btn:active{opacity:1;transform:scale(.92)}
 .playbtn{
   display:inline-flex;align-items:center;gap:6px;margin-top:8px;
   background:rgba(184,146,60,0.12);border:1px solid rgba(184,146,60,0.4);
@@ -364,6 +371,7 @@ body.chatting #chat{display:flex;flex:1;min-height:0}
       <button class="account-item" id="menuLangBtn">भाषा / Language</button>
       <button class="account-item" id="menuSupportBtn">सहायता / Support</button>
       <button class="account-item" id="menuInstallBtn">ऐप इंस्टॉल करें</button>
+      <button class="account-item" id="menuClearBtn">चैट साफ़ करें / Clear chat</button>
     </div>
   </div>
 </div>
@@ -623,15 +631,38 @@ document.querySelectorAll(".topic-card").forEach(function(card){
   });
 });
 
-function add(txt,w){var row=document.createElement("div");row.className="row "+w;var av=document.createElement("div");av.className="av "+w;if(w==="user"){av.textContent=PRAY;}var b=document.createElement("div");b.className="bubble";b.textContent=txt;row.appendChild(av);row.appendChild(b);chat.appendChild(row);chat.scrollTop=chat.scrollHeight;return b;}
+var midCounter=0;
+function newId(){return Date.now().toString(36)+"-"+(midCounter++);}
+
+function addDelBtn(row){
+  var d=document.createElement("button");
+  d.className="del-btn";
+  d.textContent=String.fromCodePoint(128465);
+  d.title=(currentLang==="en")?"Delete this question & answer":"यह प्रश्न-उत्तर हटाएँ";
+  d.onclick=function(ev){ ev.stopPropagation(); deleteExchange(row); };
+  row.appendChild(d);
+}
+function add(txt,w,deletable){
+  var row=document.createElement("div");row.className="row "+w;
+  row.dataset.mid=newId();
+  var av=document.createElement("div");av.className="av "+w;
+  if(w==="user"){av.textContent=PRAY;}
+  var b=document.createElement("div");b.className="bubble";b.textContent=txt;
+  row.appendChild(av);row.appendChild(b);
+  if(deletable)addDelBtn(row);
+  chat.appendChild(row);chat.scrollTop=chat.scrollHeight;return b;
+}
 function addTyping(){
   var row=document.createElement("div");row.className="row bot";
+  row.dataset.mid=newId();
   var av=document.createElement("div");av.className="av bot";
   var b=document.createElement("div");b.className="bubble";
   var wf=document.createElement("span");wf.className="waveform";
   for(var i=0;i<5;i++){wf.appendChild(document.createElement("i"));}
   b.appendChild(wf);
-  row.appendChild(av);row.appendChild(b);chat.appendChild(row);chat.scrollTop=chat.scrollHeight;return b;
+  row.appendChild(av);row.appendChild(b);
+  addDelBtn(row);
+  chat.appendChild(row);chat.scrollTop=chat.scrollHeight;return b;
 }
 function play(b64){var a=new Audio("data:audio/wav;base64,"+b64);a.play();}
 function addPlay(bubble,b64){var pb=document.createElement("button");pb.className="playbtn";pb.textContent=t("listenBtn");pb.onclick=function(){play(b64);};bubble.appendChild(document.createElement("br"));bubble.appendChild(pb);}
@@ -712,19 +743,48 @@ function loadHistory(){
     return Array.isArray(h) ? h : [];
   }catch(e){ return []; }
 }
-function saveHistory(w, txt){
+function saveHistory(w, txt, bubble){
   if(!txt) return;
+  var id = (bubble && bubble.parentNode) ? bubble.parentNode.dataset.mid : "";
   var h = loadHistory();
-  h.push({w:w, t:txt});
+  h.push({id:id, w:w, t:txt});
   if(h.length > MAX_HISTORY) h = h.slice(h.length - MAX_HISTORY);
   lsSet(HISTORY_KEY, JSON.stringify(h));
 }
 function restoreHistory(){
   loadHistory().forEach(function(item){
     if(item && item.t && (item.w === "user" || item.w === "bot")){
-      add(item.t, item.w);
+      var b = add(item.t, item.w, true);
+      if(item.id && b.parentNode) b.parentNode.dataset.mid = item.id;
     }
   });
+}
+
+function deleteExchange(row){
+  if(isProcessing) return;
+  var msg = (currentLang==="en") ? "Delete this question and its answer?" : "यह प्रश्न और उसका उत्तर हटाएँ?";
+  if(!confirm(msg)) return;
+  var pair=[row];
+  if(row.classList.contains("user")){
+    var n=row.nextElementSibling;
+    if(n && n.classList.contains("bot") && n.querySelector(".del-btn")) pair.push(n);
+  }else{
+    var p=row.previousElementSibling;
+    if(p && p.classList.contains("user")) pair.push(p);
+  }
+  var ids=pair.map(function(r){return r.dataset.mid;});
+  var h=loadHistory().filter(function(x){return ids.indexOf(x.id)===-1;});
+  lsSet(HISTORY_KEY, JSON.stringify(h));
+  pair.forEach(function(r){ if(r.parentNode) r.parentNode.removeChild(r); });
+}
+
+function clearAllChat(){
+  if(isProcessing) return;
+  var msg = (currentLang==="en") ? "Delete the entire chat?" : "पूरी चैट हटाएँ?";
+  if(!confirm(msg)) return;
+  lsSet(HISTORY_KEY, "[]");
+  chat.innerHTML="";
+  greetingBubble = add(t("greeting"),"bot");
 }
 
 function handleLimitReached(typingBubble){
@@ -740,8 +800,8 @@ async function sendText(){
   var m=input.value.trim();
   if(!m)return;
   if(!canSendMessage())return;
-  add(m,"user");
-  saveHistory("user", m);
+  var ub=add(m,"user",true);
+  saveHistory("user", m, ub);
   input.value="";
   bumpCount();
   lockProcessing();
@@ -752,7 +812,7 @@ async function sendText(){
     if(data.limitReached){handleLimitReached(L);return;}
     var reply=data.reply||t("noReply");
     L.textContent=reply;
-    saveHistory("bot", reply);
+    saveHistory("bot", reply, L);
   }catch(e){
     L.textContent=t("error")+e.message;
   }finally{
@@ -1028,7 +1088,7 @@ function encodePcm16Wav(samples,sampleRate,numChannels){
 
 async function sendVoice(blob,filename){
   lockProcessing();
-  var userBubble=add(t("listening"),"user");
+  var userBubble=add(t("listening"),"user",true);
   bumpCount();
   var L=addTyping();
   try{
@@ -1057,11 +1117,11 @@ async function sendVoice(blob,filename){
     }else{
       userBubble.textContent=t("voiceFallback");
     }
-    saveHistory("user",userBubble.textContent);
+    saveHistory("user",userBubble.textContent,userBubble);
     addPlayLocal(userBubble,blob);
     var reply=data.reply||t("noReply");
     L.textContent=reply;
-    saveHistory("bot",reply);
+    saveHistory("bot",reply,L);
     if(data.audioBase64){addPlay(L,data.audioBase64);play(data.audioBase64);}
   }catch(e){
     userBubble.textContent=t("voiceFallback");
@@ -1120,6 +1180,8 @@ document.getElementById("menuProfileBtn").addEventListener("click",function(){
 document.getElementById("menuSupportBtn").addEventListener("click",function(){
   window.location.href = "support.html";
 });
+
+document.getElementById("menuClearBtn").addEventListener("click",clearAllChat);
 
 document.getElementById("menuInstallBtn").addEventListener("click",function(){
   if(typeof window.krishnaShowInstallPrompt === "function"){
