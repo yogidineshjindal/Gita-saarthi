@@ -117,6 +117,7 @@ body::after{
 .waveform i:nth-child(4){height:16px;animation-delay:.36s}
 .waveform i:nth-child(5){height:7px;animation-delay:.48s}
 @keyframes wave{0%,100%{transform:scaleY(.4);opacity:.55}50%{transform:scaleY(1);opacity:1}}
+.wait-text{font-size:13px;color:var(--ink-muted);font-weight:500;margin-left:6px;vertical-align:middle}
 .del-btn{
   background:rgba(255,255,255,0.7);border:1px solid rgba(184,146,60,0.3);border-radius:50%;
   width:28px;height:28px;flex-shrink:0;align-self:center;cursor:pointer;
@@ -494,6 +495,8 @@ var TXT = {
     listening:String.fromCodePoint(127908)+" सुन रहा हूँ...",
     voiceFallback:String.fromCodePoint(127908)+" (आपकी आवाज़)",
     noReply:"(कोई उत्तर नहीं)",
+    waitReply:"उत्तर की प्रतीक्षा करें...",
+    noVoice:"आवाज़ नहीं मिली, फिर कोशिश करें",
     error:"कुछ गड़बड़ हो गयी: ",
     micError:"माइक एक्सेस नहीं मिला: ",
     listenBtn:String.fromCodePoint(128266)+" सुनें",
@@ -537,6 +540,8 @@ var TXT = {
     listening:String.fromCodePoint(127908)+" Listening...",
     voiceFallback:String.fromCodePoint(127908)+" (your voice)",
     noReply:"(no reply)",
+    waitReply:"Please wait for the answer...",
+    noVoice:"No voice detected, try again",
     error:"Something went wrong: ",
     micError:"Mic access denied: ",
     listenBtn:String.fromCodePoint(128266)+" Listen",
@@ -660,6 +665,10 @@ function addTyping(){
   var wf=document.createElement("span");wf.className="waveform";
   for(var i=0;i<5;i++){wf.appendChild(document.createElement("i"));}
   b.appendChild(wf);
+  var wt=document.createElement("span");
+  wt.className="wait-text";
+  wt.textContent=" "+t("waitReply");
+  b.appendChild(wt);
   row.appendChild(av);row.appendChild(b);
   addDelBtn(row);
   chat.appendChild(row);chat.scrollTop=chat.scrollHeight;return b;
@@ -825,7 +834,9 @@ var mediaRec=null,chunks=[],recording=false,micPressing=false,micStream=null,req
 var pressStartTime=0;
 var MIN_HOLD_MS=350;             // release before this = "tapped", not "held"
 var MIN_AUDIO_SECONDS=0.4;       // recordings shorter than this are discarded
-var SILENCE_RMS_THRESHOLD=0.008; // near-silent audio is discarded
+var SPEECH_WINDOW_RMS=0.015;     // a 30ms window louder than this counts as "speech"
+var MIN_SPEECH_MS=200;           // need at least this much speech-level audio
+var MIN_PEAK=0.04;               // and at least one clear peak
 
 var micHintEl=document.getElementById("micHint");
 var micHintTimer=null;
@@ -853,21 +864,23 @@ async function analyzeWav(wavBlob){
     var view = new DataView(buf);
     var dataSize = view.getUint32(40, true);
     var sampleRate = view.getUint32(24, true);
-    var durationSec = (dataSize/2) / sampleRate; // 16-bit mono PCM
+    var sampleCount = dataSize/2;
+    var durationSec = sampleCount / sampleRate; // 16-bit mono PCM
     if(durationSec < MIN_AUDIO_SECONDS) return {hasVoice:false};
 
-    var offset = 44;
-    var sampleCount = dataSize/2;
-    var sumSquares = 0;
-    var step = Math.max(1, Math.floor(sampleCount/20000)); // sample-check for speed on long clips
-    var counted = 0;
-    for(var i=0; i<sampleCount; i+=step){
-      var s = view.getInt16(offset + i*2, true) / 32768;
-      sumSquares += s*s;
-      counted++;
+    var win = Math.max(1, Math.floor(sampleRate*0.03));
+    var speechWindows = 0, peak = 0;
+    for(var start=0; start+win<=sampleCount; start+=win){
+      var sum = 0;
+      for(var k=0;k<win;k++){
+        var v = Math.abs(view.getInt16(44 + (start+k)*2, true) / 32768);
+        sum += v*v;
+        if(v>peak) peak=v;
+      }
+      if(Math.sqrt(sum/win) >= SPEECH_WINDOW_RMS) speechWindows++;
     }
-    var rms = Math.sqrt(sumSquares/Math.max(1,counted));
-    return {hasVoice: rms >= SILENCE_RMS_THRESHOLD};
+    var speechMs = speechWindows*30;
+    return {hasVoice: speechMs >= MIN_SPEECH_MS && peak >= MIN_PEAK};
   }catch(e){
     // If analysis fails for any reason, don't block sending - fail open.
     return {hasVoice:true};
@@ -1112,11 +1125,18 @@ async function sendVoice(blob,filename){
       handleLimitReached(L);
       return;
     }
-    if(data.transcript){
-      userBubble.textContent=data.transcript;
-    }else{
-      userBubble.textContent=t("voiceFallback");
+    var tr=(data.transcript||"").trim();
+    // Nothing meaningful heard (empty, or only punctuation/symbols): remove
+    // both bubbles, don't count it as a question, and show a hint instead.
+    if(!/[\p{L}\p{N}]/u.test(tr)){
+      msgCount=Math.max(0,msgCount-1);
+      var ur=userBubble.parentNode, br=L.parentNode;
+      if(ur && ur.parentNode) ur.parentNode.removeChild(ur);
+      if(br && br.parentNode) br.parentNode.removeChild(br);
+      showMicHint(t("noVoice"));
+      return;
     }
+    userBubble.textContent=tr;
     saveHistory("user",userBubble.textContent,userBubble);
     addPlayLocal(userBubble,blob);
     var reply=data.reply||t("noReply");
